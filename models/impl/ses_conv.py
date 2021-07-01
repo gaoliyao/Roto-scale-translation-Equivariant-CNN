@@ -1,9 +1,10 @@
 '''MIT License. Copyright (c) 2020 Ivan Sosnovik, Michał Szmaja'''
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .ses_basis import steerable_A, steerable_B, steerable_C
+from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D
 from .ses_basis import normalize_basis_by_min_scale
 
 
@@ -33,6 +34,8 @@ class SESConv_Z2_H(nn.Module):
         self.num_scales = len(scales)
         self.stride = stride
         self.padding = padding
+        
+        self.rotations = [-math.pi*2/3, 0, math.pi*2/3]
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
@@ -40,6 +43,11 @@ class SESConv_Z2_H(nn.Module):
             basis = steerable_B(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'C':
             basis = steerable_C(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'D':
+            basis = steerable_D(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        
+        # basis.shape = (49, 4, 15, 15)
+        # basis.shape = (num_bases, num_scales, filter_width, filter_width)
         basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
 
@@ -62,14 +70,14 @@ class SESConv_Z2_H(nn.Module):
         basis = self.basis.view(self.num_funcs, -1)
         kernel = self.weight @ basis
         kernel = kernel.view(self.out_channels, self.in_channels,
-                             self.num_scales, self.kernel_size, self.kernel_size)
+                             self.num_scales*len(self.rotations), self.kernel_size, self.kernel_size)
         kernel = kernel.permute(0, 2, 1, 3, 4).contiguous()
         kernel = kernel.view(-1, self.in_channels, self.kernel_size, self.kernel_size)
 
         # convolution
         y = F.conv2d(x, kernel, bias=None, stride=self.stride, padding=self.padding)
         B, C, H, W = y.shape
-        y = y.view(B, self.out_channels, self.num_scales, H, W)
+        y = y.view(B, self.out_channels, self.num_scales*len(self.rotations), H, W)
 
         if self.bias is not None:
             y = y + self.bias.view(1, -1, 1, 1, 1)
@@ -114,6 +122,8 @@ class SESConv_H_H(nn.Module):
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'B':
             basis = steerable_B(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'C':
+            basis = steerable_C(kernel_size, scales, effective_size, **kwargs)
 
         basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)

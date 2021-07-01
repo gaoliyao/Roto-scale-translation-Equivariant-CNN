@@ -108,7 +108,7 @@ def mnist_ses_vector_56p(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales,
-                        basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
     return nn.Sequential(nn.Upsample(scale_factor=2), model)
 
 
@@ -138,7 +138,7 @@ def mnist_ses_scalar_56p(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_Scalar(pool_size=8, kernel_size=size, scales=scales,
-                             basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
     return nn.Sequential(nn.Upsample(scale_factor=2), model)
 
 
@@ -153,7 +153,7 @@ def mnist_ses_scalar_56(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_Scalar(pool_size=8, kernel_size=size, scales=scales,
-                             basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
     return nn.Sequential(nn.Upsample(scale_factor=2), model)
 
 
@@ -168,7 +168,7 @@ def mnist_ses_vector_28p(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales,
-                        basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
     return model
 
 
@@ -183,7 +183,7 @@ def mnist_ses_vector_28(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales,
-                        basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
     return model
 
 
@@ -198,7 +198,7 @@ def mnist_ses_scalar_28p(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales,
-                             basis_type='B', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='D', mult=mult, max_order=4, dropout=dropout)
     return model
 
 
@@ -213,5 +213,5 @@ def mnist_ses_scalar_28(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales,
-                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='D', mult=mult, max_order=4, dropout=dropout)
     return model

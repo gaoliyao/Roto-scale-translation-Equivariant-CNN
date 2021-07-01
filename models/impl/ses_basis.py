@@ -130,6 +130,41 @@ def multiscale_fourier_bessel(size, base_scale, max_order=4, mult=2, num_funcs=N
     # basis: (49, 5, 5)
     return basis_xy
 
+def multiscale_fourier_bessel(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None):
+    '''Basis of Hermite polynomials with Gaussian Envelope.
+    The maximum order is shared between functions. More functions are added
+    by decreasing the scale.
+    '''
+    num_funcs = num_funcs or size ** 2
+    num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
+    num_scales = math.ceil(num_funcs / num_funcs_per_scale)
+    scales = [base_scale / (mult ** n) for n in range(num_scales)]
+    print('hermite scales', scales)
+    
+    # num_basis_ind = 15
+    basis_xy = np.zeros([60, size, size])
+    count = 0
+
+    for scale in scales:
+        # psi_scale.shape = (25, 15)
+        psi_scale, _, _ = calculate_FB_bases(int((size-1)/2), base_rotation, scale, 15)
+        # psi_scale.shape = (15, 25)
+        psi_scale = psi_scale.transpose()
+        # psi_scale *= 2**(-2*scale)
+        print(psi_scale.shape)
+        basis_xy[count*15:(1+count)*15] = psi_scale.reshape(15, size, size)
+        count += 1
+    
+    # basis_xy: (49, 5, 5)
+    basis_xy = torch.Tensor(basis_xy)[:num_funcs]
+    
+    print("multiscale basis.shape")
+    print(basis_xy.shape)
+    
+    # 49 basis in total, 25 is the filter map
+    # basis: (49, 5, 5)
+    return basis_xy
+
 
 def steerable_A(size, scales, effective_size, **kwargs):
     max_order = effective_size - 1
@@ -201,6 +236,34 @@ def steerable_C(size, scales, effective_size, **kwargs):
     print("steerable_basis.shape")
     print(steerable_basis.shape)
     # steerable_basis: (49, 4, 15, 15)
+    return steerable_basis
+
+def steerable_D(size, rotations, scales, effective_size, **kwargs):
+    mult = kwargs.get('mult', 1.2)
+    max_order = kwargs.get('max_order', 4)
+    num_funcs = effective_size**2
+    max_scale = max(scales)
+    basis_tensors = []
+    for rotation in rotations:
+        for scale in scales:
+            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            print("size_before_pad")
+            print(size_before_pad)
+            assert size_before_pad > 1
+            basis = multiscale_fourier_bessel(size_before_pad,
+                                                base_rotation=rotation,
+                                                base_scale=scale,
+                                                max_order=max_order,
+                                                mult=mult,
+                                                num_funcs=num_funcs)
+            basis = basis[None, :, :, :]
+            pad_size = (size - size_before_pad) // 2
+            basis = F.pad(basis, [pad_size] * 4)[0]
+            basis_tensors.append(basis)
+    steerable_basis = torch.stack(basis_tensors, 1)
+    print("steerable_D_basis.shape")
+    print(steerable_basis.shape)
+    # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
 
 
