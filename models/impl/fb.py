@@ -6,6 +6,7 @@ https://github.com/ZeWang95/DCFNet-Pytorch/blob/master/fb.py
 import numpy as np 
 from scipy import special
 
+# Change based on environment
 path_to_bessel = "/home/gao463/Downloads/sesn-master/models/impl/bessel.npy"
 
 def cartesian_to_polar_coordinates(x, y):
@@ -13,6 +14,12 @@ def cartesian_to_polar_coordinates(x, y):
     phi = np.arctan2(y, x)
     return (phi, rho)
 
+# Input: 
+# L1: size of filter
+# alpha: scale transformation
+# maxK: maximum number of basis
+# Output: 
+# psi: FB basis with shape: (filter_map^2, num_basis)
 def calculate_FB_bases(L1, alpha, maxK):
     '''
     s = 2^alpha is the scale
@@ -28,7 +35,7 @@ def calculate_FB_bases(L1, alpha, maxK):
     truncate_freq_factor = 2.5
 
     if L1 < 2:
-        truncate_freq_factor = 2
+        truncate_freq_factor = 2.5
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
@@ -42,7 +49,8 @@ def calculate_FB_bases(L1, alpha, maxK):
     num_grid_points = ugrid.shape[0]
 
     maxAngFreq = 15
-
+    
+    # change path based on environment
     bessel = np.load(path_to_bessel)
 
     B = bessel[(bessel[:,0] <= maxAngFreq) & (bessel[:,3]<= np.pi*R*truncate_freq_factor)]
@@ -119,7 +127,14 @@ def calculate_FB_bases(L1, alpha, maxK):
 
     return psi, c, kq_Psi
 
-def calculate_FB_bases(L1, theta, alpha, maxK):
+# Input: 
+# L1: size of filter
+# theta: angle transformation (0 to 2pi)
+# alpha: scale transformation
+# maxK: maximum number of basis
+# Output: 
+# psi: FB basis with shape: (filter_map^2, num_basis)
+def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
     '''
     s = 2^alpha is the scale
     alpha <= 0

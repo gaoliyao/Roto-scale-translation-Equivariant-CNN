@@ -35,7 +35,7 @@ class SESConv_Z2_H(nn.Module):
         self.stride = stride
         self.padding = padding
         
-        self.rotations = [-math.pi*2/3, 0, math.pi*2/3]
+        self.rotations = [-math.pi*2/3.0, -math.pi/3.0, 0, math.pi/3.0, math.pi*2/3]
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
@@ -48,7 +48,7 @@ class SESConv_Z2_H(nn.Module):
         
         # basis.shape = (49, 4, 15, 15)
         # basis.shape = (num_bases, num_scales, filter_width, filter_width)
-        basis = normalize_basis_by_min_scale(basis)
+        # basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
 
         self.num_funcs = self.basis.size(0)
@@ -71,10 +71,13 @@ class SESConv_Z2_H(nn.Module):
         kernel = self.weight @ basis
         kernel = kernel.view(self.out_channels, self.in_channels,
                              self.num_scales*len(self.rotations), self.kernel_size, self.kernel_size)
+        
         kernel = kernel.permute(0, 2, 1, 3, 4).contiguous()
         kernel = kernel.view(-1, self.in_channels, self.kernel_size, self.kernel_size)
 
         # convolution
+        # y = F.conv2d(x, kernel, bias=None, stride=self.stride, padding=self.padding)
+        # circular padding
         y = F.conv2d(x, kernel, bias=None, stride=self.stride, padding=self.padding)
         B, C, H, W = y.shape
         y = y.view(B, self.out_channels, self.num_scales*len(self.rotations), H, W)
