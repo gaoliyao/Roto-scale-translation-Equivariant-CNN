@@ -15,7 +15,7 @@ function train_scale_mnist() {
             --batch_size 128 \
             --epochs 60 \
             --optim adam \
-            --lr 0.01 \
+            --lr 0.005 \
             --lr_steps 20 40 \
             --model $1 \
             --save_model_path "./saved_models/mnist/$1_extra_scaling_$2.pt" \
