@@ -81,6 +81,43 @@ def make_mnist_scale_50k(source, dest, min_scale, max_scale, download=False, see
     idx = _save_images_to_folder(train, transform, dataset_path, 'train', 0, '.png')
     idx = _save_images_to_folder(test, transform, dataset_path, 'test', idx, '.png')
     idx = _save_images_to_folder(val, transform, dataset_path, 'val', idx, '.png')
+    
+def make_mnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max_scale, download=False, seed=0, **kwargs):
+    '''
+    We follow the procedure described in 
+    https://arxiv.org/pdf/1807.11783.pdf
+    https://arxiv.org/pdf/1906.03861.pdf
+    '''
+    MNIST_TRAIN_SIZE = 10000
+    MNIST_VAL_SIZE = 2000
+    MNIST_TEST_SIZE = 50000
+
+    np.random.seed(seed)
+    random.seed(seed)
+    # 3 stands for PIL.Image.BICUBIC
+    transform = transforms.RandomAffine([min_rot, max_rot], scale=(min_scale, max_scale), resample=3)
+
+    dataset_train = datasets.MNIST(root=source, train=True, download=download)
+    dataset_test = datasets.MNIST(root=source, train=False, download=download)
+    concat_dataset = ConcatDataset([dataset_train, dataset_test])
+
+    labels = [el[1] for el in concat_dataset]
+    train_val_size = MNIST_TRAIN_SIZE + MNIST_VAL_SIZE
+    train_val, test = train_test_split(concat_dataset, train_size=train_val_size,
+                                       test_size=MNIST_TEST_SIZE, stratify=labels)
+
+    labels = [el[1] for el in train_val]
+    train, val = train_test_split(train_val, train_size=MNIST_TRAIN_SIZE,
+                                  test_size=MNIST_VAL_SIZE, stratify=labels)
+
+    dest = os.path.expanduser(dest)
+    dataset_path = os.path.join(dest, 'MNIST_scale', "seed_{}".format(seed))
+    dataset_path = os.path.join(dataset_path, "scale_{}_{}".format(min_scale, max_scale))
+    print('OUTPUT: {}'.format(dataset_path))
+
+    idx = _save_images_to_folder(train, transform, dataset_path, 'train', 0, '.png')
+    idx = _save_images_to_folder(test, transform, dataset_path, 'test', idx, '.png')
+    idx = _save_images_to_folder(val, transform, dataset_path, 'val', idx, '.png')
 
 
 if __name__ == '__main__':
@@ -89,6 +126,10 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--source', type=str, required=True, help='source folder of the dataset')
     parser.add_argument('--dest', type=str, required=True, help='destination folder for the output')
+    parser.add_argument('--min_rot', type=float, required=True,
+                        help='min scale for the generated dataset')
+    parser.add_argument('--max_rot', type=float, default=1.0,
+                        help='max scale for the generated dataset')
     parser.add_argument('--min_scale', type=float, required=True,
                         help='min scale for the generated dataset')
     parser.add_argument('--max_scale', type=float, default=1.0,
@@ -109,4 +150,4 @@ if __name__ == '__main__':
         for k, v in vars(args).items():
             print('{}={}'.format(k, v))
 
-        make_mnist_scale_50k(**vars(args))
+        make_mnist_rotation_scale_50k(**vars(args))
