@@ -84,6 +84,7 @@ def multiscale_hermite_gaussian(size, base_scale, max_order=4, mult=2, num_funcs
 
     X = np.linspace(-(size // 2), size // 2, size)
     Y = np.linspace(-(size // 2), size // 2, size)
+    
 
     for scale in scales:
         G = np.exp(-X**2 / (2 * scale**2)) / scale
@@ -107,7 +108,7 @@ def multiscale_hermite_gaussian(size, base_scale, max_order=4, mult=2, num_funcs
     # basis_x[:, :, None]: (49, 5, 1)
     # basis_y[:, None, :]: (49, 1, 5)
     basis = torch.bmm(basis_x[:, :, None], basis_y[:, None, :])
-    print(basis[1,:,:])
+    # print(basis[1,:,:])
     # print("multiscale basis.shape")
     # print(basis.shape)
     
@@ -142,7 +143,7 @@ def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_o
         # print(order_y[mask])
         for i in range(len(order_x[mask])):
             n = order_x[mask][i]
-            m = order_x[mask][i]
+            m = order_y[mask][i]
             base_n_m = hermite_poly_rot_scale(ugrid[:,0], ugrid[:,1], base_rotation, scale, n, m)
             # print(base_n_m.shape)                
             bxy.append(base_n_m)
@@ -154,7 +155,7 @@ def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_o
     print(np.array(basis_xy).shape)
     basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
     basis = basis.reshape(-1, size, size)
-    print(basis[1,:,:])
+    # print(basis[1,:,:])
     # basis_x[:, :, None]: (49, 5, 1)
     # basis_y[:, None, :]: (49, 1, 5)
     print("multiscale basis hermite rot scale.shape")
