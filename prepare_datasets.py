@@ -88,7 +88,7 @@ def make_mnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max
     https://arxiv.org/pdf/1807.11783.pdf
     https://arxiv.org/pdf/1906.03861.pdf
     '''
-    MNIST_TRAIN_SIZE = 10000
+    MNIST_TRAIN_SIZE = 15000
     MNIST_VAL_SIZE = 2000
     MNIST_TEST_SIZE = 50000
 
@@ -112,7 +112,7 @@ def make_mnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max
 
     dest = os.path.expanduser(dest)
     dataset_path = os.path.join(dest, 'MNIST_scale', "seed_{}".format(seed))
-    dataset_path = os.path.join(dataset_path, "scale_{}_{}".format(min_scale, max_scale))
+    dataset_path  = os.path.join(dataset_path, "scale_{}_{}".format(min_scale, max_scale))
     print('OUTPUT: {}'.format(dataset_path))
 
     idx = _save_images_to_folder(train, transform, dataset_path, 'train', 0, '.png')

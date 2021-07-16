@@ -151,15 +151,15 @@ def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_o
         basis_xy.extend(bxy)
     
     # basis_x[:49]: (49, 5)
-    print("basis_xy.shape out for loop")
-    print(np.array(basis_xy).shape)
+    # print("basis_xy.shape out for loop")
+    # print(np.array(basis_xy).shape)
     basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
     basis = basis.reshape(-1, size, size)
     # print(basis[1,:,:])
     # basis_x[:, :, None]: (49, 5, 1)
     # basis_y[:, None, :]: (49, 1, 5)
-    print("multiscale basis hermite rot scale.shape")
-    print(basis.shape)
+    # print("multiscale basis hermite rot scale.shape")
+    # print(basis.shape)
     
     # 49 basis in total, 25 is the filter map
     # basis: (49, 5, 5)
@@ -187,7 +187,7 @@ def multiscale_fourier_bessel(size, base_scale, max_order=4, mult=2, num_funcs=N
         # psi_scale.shape = (15, 25)
         psi_scale = psi_scale.transpose()
         # psi_scale *= 2**(-2*scale)
-        print(psi_scale.shape)
+        # print(psi_scale.shape)
         basis_xy[count*15:(1+count)*15] = psi_scale.reshape(15, size, size)
         count += 1
     
@@ -223,7 +223,7 @@ def multiscale_fourier_bessel_rot_scale(size, base_rotation, base_scale, max_ord
         # psi_scale.shape = (15, 25)
         psi_scale = psi_scale.transpose()
         # psi_scale *= 2**(-2*scale)
-        print(psi_scale.shape)
+        # print(psi_scale.shape)
         basis_xy[count*15:(1+count)*15] = psi_scale.reshape(15, size, size)
         count += 1
     
@@ -266,8 +266,8 @@ def steerable_B(size, scales, effective_size, **kwargs):
     basis_tensors = []
     for scale in scales:
         size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-        print("size_before_pad")
-        print(size_before_pad)
+        # print("size_before_pad")
+        # print(size_before_pad)
         assert size_before_pad > 1
         basis = multiscale_hermite_gaussian(size_before_pad,
                                             base_scale=scale,
@@ -294,8 +294,8 @@ def steerable_C(size, rotations, scales, effective_size, **kwargs):
     for rotation in rotations:
         for scale in scales:
             size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-            print("size_before_pad")
-            print(size_before_pad)
+            # print("size_before_pad")
+            # print(size_before_pad)
             assert size_before_pad > 1
             basis = multiscale_hermite_gaussian_rot_scale(size_before_pad,
                                                 base_rotation=rotation,
@@ -322,8 +322,8 @@ def steerable_D(size, scales, effective_size, **kwargs):
     basis_tensors = []
     for scale in scales:
         size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-        print("size_before_pad")
-        print(size_before_pad)
+        # print("size_before_pad")
+        # print(size_before_pad)
         assert size_before_pad > 1
         basis = multiscale_fourier_bessel(size_before_pad,
                                             base_scale=scale,
@@ -350,8 +350,8 @@ def steerable_E(size, rotations, scales, effective_size, **kwargs):
     for rotation in rotations:
         for scale in scales:
             size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-            print("size_before_pad")
-            print(size_before_pad)
+            # print("size_before_pad")
+            # print(size_before_pad)
             assert size_before_pad > 1
             basis = multiscale_fourier_bessel_rot_scale(size_before_pad,
                                                 base_rotation=rotation,

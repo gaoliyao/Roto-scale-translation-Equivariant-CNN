@@ -15,6 +15,7 @@ import math
 
 from .impl.ses_conv import SESConv_H_H, SESConv_Z2_H, SESConv_H_H_1x1, SESMaxProjection
 
+basis_choice = 'A'
 
 class BasicBlock(nn.Module):
     def __init__(self, in_planes, out_planes, stride, dropRate=0.0, scales=[1.0], pool=False, interscale=False):
@@ -25,19 +26,19 @@ class BasicBlock(nn.Module):
             self.conv1 = nn.Sequential(
                 SESMaxProjection(),
                 SESConv_Z2_H(in_planes, out_planes, kernel_size=7, effective_size=3,
-                             stride=stride, padding=3, bias=False, scales=scales, basis_type='A')
+                             stride=stride, padding=3, bias=False, scales=scales, basis_type=basis_choice)
             )
         else:
             if interscale:
                 self.conv1 = SESConv_H_H(in_planes, out_planes, 2, kernel_size=7, effective_size=3, stride=stride,
-                                         padding=3, bias=False, scales=scales, basis_type='A')
+                                         padding=3, bias=False, scales=scales, basis_type=basis_choice)
             else:
                 self.conv1 = SESConv_H_H(in_planes, out_planes, 1, kernel_size=7, effective_size=3, stride=stride,
-                                         padding=3, bias=False, scales=scales, basis_type='A')
+                                         padding=3, bias=False, scales=scales, basis_type=basis_choice)
         self.bn2 = nn.BatchNorm3d(out_planes)
         self.relu2 = nn.ReLU(inplace=True)
         self.conv2 = SESConv_H_H(out_planes, out_planes, 1, kernel_size=7, effective_size=3, stride=1,
-                                 padding=3, bias=False, scales=scales, basis_type='A')
+                                 padding=3, bias=False, scales=scales, basis_type=basis_choice)
         self.droprate = dropRate
         self.equalInOut = (in_planes == out_planes)
         self.convShortcut = (not self.equalInOut) and SESConv_H_H_1x1(in_planes, out_planes,
@@ -85,7 +86,7 @@ class WideResNet(nn.Module):
         block = BasicBlock
         # 1st conv before any network block
         self.conv1 = SESConv_Z2_H(3, nChannels[0], kernel_size=7, effective_size=3, stride=1,
-                                  padding=3, bias=False, scales=scales, basis_type='A')
+                                  padding=3, bias=False, scales=scales, basis_type=basis_choice)
         # 1st block
         self.block1 = NetworkBlock(n, nChannels[0], nChannels[1], block, 1,
                                    dropRate, scales=scales, pool=pools[0], interscale=interscale[0])

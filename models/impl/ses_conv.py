@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D
+from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E
 from .ses_basis import normalize_basis_by_min_scale
 
 
@@ -35,8 +35,10 @@ class SESConv_Z2_H(nn.Module):
         self.stride = stride
         self.padding = padding
         
-        self.rotations = [-math.pi*2/3.0, -math.pi/3.0, 0, math.pi/3.0, math.pi*2/3]
-        # self.rotations = [0]
+        # self.rotations = [0, math.pi/8.0, math.pi/4.0, math.pi*3/8.0, math.pi/2, math.pi*5/8.0, math.pi*3/4, math.pi*7/8.0, math.pi, math.pi*9/8.0, math.pi*5/4, math.pi*11/8.0, math.pi*3.0/2, math.pi*13/8.0, math.pi*7.0/4, math.pi*15/8.0]
+        # self.rotations = [0, math.pi/4.0, math.pi/2, math.pi*3/4, math.pi, math.pi*5/4, math.pi*3.0/2, math.pi*7.0/4]
+        # self.rotations = [0, math.pi/3.0, math.pi*2/3, math.pi, math.pi*4/3.0, math.pi*5/3.0]
+        self.rotations = [0]
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
@@ -51,7 +53,7 @@ class SESConv_Z2_H(nn.Module):
         
         # basis.shape = (49, 4, 15, 15)
         # basis.shape = (num_bases, num_scales, filter_width, filter_width)
-        basis = normalize_basis_by_min_scale(basis)
+        # basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
 
         self.num_funcs = self.basis.size(0)
@@ -167,10 +169,18 @@ class SESConv_H_H(nn.Module):
                              self.kernel_size, self.kernel_size)
 
         # calculate padding
+        # rot and scale separate
+        # scale: like following
+        # rotation: cyclic padding
         if self.scale_size != 1:
             value = x.mean()
             x = F.pad(x, [0, 0, 0, 0, 0, self.scale_size - 1])
 
+        # double for loop
+        # merge 
+        # self.scale_size = 1
+        # self.rotation_size = 1
+        # self.num_scales = 4
         output = 0.0
         for i in range(self.scale_size):
             x_ = x[:, :, i:i + self.num_scales]
