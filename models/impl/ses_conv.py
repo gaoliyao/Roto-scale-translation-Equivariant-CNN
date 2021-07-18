@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E
+from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E, steerable_F
 from .ses_basis import normalize_basis_by_min_scale
 
 
@@ -37,8 +37,8 @@ class SESConv_Z2_H(nn.Module):
         
         # self.rotations = [0, math.pi/8.0, math.pi/4.0, math.pi*3/8.0, math.pi/2, math.pi*5/8.0, math.pi*3/4, math.pi*7/8.0, math.pi, math.pi*9/8.0, math.pi*5/4, math.pi*11/8.0, math.pi*3.0/2, math.pi*13/8.0, math.pi*7.0/4, math.pi*15/8.0]
         # self.rotations = [0, math.pi/4.0, math.pi/2, math.pi*3/4, math.pi, math.pi*5/4, math.pi*3.0/2, math.pi*7.0/4]
-        # self.rotations = [0, math.pi/3.0, math.pi*2/3, math.pi, math.pi*4/3.0, math.pi*5/3.0]
-        self.rotations = [0]
+        self.rotations = [0, math.pi/3.0, math.pi*2/3, math.pi, math.pi*4/3.0, math.pi*5/3.0]
+        # self.rotations = [0]
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
@@ -50,6 +50,8 @@ class SESConv_Z2_H(nn.Module):
             basis = steerable_D(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'E':
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'F':
+            basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
         
         # basis.shape = (49, 4, 15, 15)
         # basis.shape = (num_bases, num_scales, filter_width, filter_width)
@@ -136,6 +138,8 @@ class SESConv_H_H(nn.Module):
             basis = steerable_D(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'E':
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'F':
+            basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
 
         basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
