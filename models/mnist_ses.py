@@ -2,6 +2,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 from .impl.ses_conv import SESMaxProjection
 from .impl.ses_conv import SESConv_Z2_H, SESConv_H_H
@@ -9,11 +10,11 @@ from .impl.ses_conv import SESConv_Z2_H, SESConv_H_H
 
 class MNIST_SES_Scalar(nn.Module):
 
-    def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], basis_type='A', **kwargs):
+    def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], rotations=[0.0], basis_type='A', **kwargs):
         super().__init__()
         C1, C2, C3 = 32, 63, 95
         self.main = nn.Sequential(
-            SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales,
+            SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
                          basis_type=basis_type, **kwargs),
             SESMaxProjection(),
@@ -21,7 +22,7 @@ class MNIST_SES_Scalar(nn.Module):
             nn.MaxPool2d(2),
             nn.BatchNorm2d(C1),
 
-            SESConv_Z2_H(C1, C2, kernel_size, 7, scales=scales,
+            SESConv_Z2_H(C1, C2, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
                          basis_type=basis_type, **kwargs),
             SESMaxProjection(),
@@ -29,7 +30,7 @@ class MNIST_SES_Scalar(nn.Module):
             nn.MaxPool2d(2),
             nn.BatchNorm2d(C2),
 
-            SESConv_Z2_H(C2, C3, kernel_size, 7, scales=scales,
+            SESConv_Z2_H(C2, C3, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
                          basis_type=basis_type, **kwargs),
             SESMaxProjection(),
@@ -55,25 +56,27 @@ class MNIST_SES_Scalar(nn.Module):
 
 class MNIST_SES_V(nn.Module):
 
-    def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], basis_type='A', dropout=0.7, **kwargs):
+    def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], rotations=[0.0], scale_size=1, rotation_size=1, basis_type='A', dropout=0.7, **kwargs):
         super().__init__()
         C1, C2, C3 = 32, 63, 95
         self.main = nn.Sequential(
-            SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales,
+            SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
                          basis_type=basis_type, **kwargs),
             nn.ReLU(True),
             nn.MaxPool3d([1, 2, 2], stride=[1, 2, 2]),
             nn.BatchNorm3d(C1),
 
-            SESConv_H_H(C1, C2, 1, kernel_size, 7, scales=scales,
+            SESConv_H_H(C1, C2, scale_size, rotation_size, kernel_size, 7,
+                        scales=scales, rotations=rotations,
                         padding=kernel_size // 2, bias=True,
                         basis_type=basis_type, **kwargs),
             nn.ReLU(True),
             nn.MaxPool3d([1, 2, 2], stride=[1, 2, 2]),
             nn.BatchNorm3d(C2),
 
-            SESConv_H_H(C2, C3, 1, kernel_size, 7, scales=scales,
+            SESConv_H_H(C2, C3, scale_size, rotation_size, kernel_size, 7,
+                        scales=scales, rotations=rotations,
                         padding=kernel_size // 2, bias=True,
                         basis_type=basis_type, **kwargs),
             SESMaxProjection(),
@@ -97,6 +100,102 @@ class MNIST_SES_V(nn.Module):
         return x
 
 
+def mnist_ses_scalar_28_rot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [0.0]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_scalar_28_rot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+    
+def mnist_ses_scalar_28_rot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=1,
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_vector_28_rot_8_interrot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=4,
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=8,
+                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+    return model
+
+    
+'''
 def mnist_ses_vector_56p(**kwargs):
     num_scales = 4
     factor = 2.0
@@ -215,3 +314,4 @@ def mnist_ses_scalar_28(**kwargs):
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales,
                              basis_type='F', mult=mult, max_order=4, dropout=dropout)
     return model
+'''
