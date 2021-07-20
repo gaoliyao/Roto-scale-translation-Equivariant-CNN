@@ -51,14 +51,7 @@ function train_stl_64() {
 
 
 model_list=(
-    "wrn_16_8"
-    "wrn_16_8_kanazawa"
-    "wrn_16_8_xu"
-    "wrn_16_8_ss"
-    "wrn_16_8_dss"
-    "wrn_16_8_ses_a"
     "wrn_16_8_ses_b"
-    "wrn_16_8_ses_c"
 )
 
 for model_name in "${model_list[@]}"

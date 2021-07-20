@@ -153,8 +153,8 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
-    xx = xx/R*2**-alpha
-    yy = yy/R*2**-alpha
+    xx = xx/(R*alpha)
+    yy = yy/(R*alpha)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid

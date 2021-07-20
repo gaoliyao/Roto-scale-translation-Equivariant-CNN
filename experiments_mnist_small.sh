@@ -12,10 +12,10 @@ function train_scale_mnist() {
     do 
         data_dir="$MNIST_SCALE_DIR/MNIST_scale/seed_$seed/scale_0.3_1.0"
         python train_scale_mnist.py \
-            --batch_size 128 \
+            --batch_size 64 \
             --epochs 60 \
-            --optim adam \
-            --lr 0.005 \
+            --optim sgd \
+            --lr 0.01 \
             --lr_steps 20 40 \
             --model $1 \
             --save_model_path "./saved_models/mnist/$1_extra_scaling_$2.pt" \

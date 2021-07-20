@@ -29,7 +29,7 @@ parser.add_argument('--epochs', type=int, default=60)
 parser.add_argument('--optim', type=str, default='adam', choices=['adam', 'sgd'])
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--nesterov', action='store_true', default=False)
-parser.add_argument('--decay', type=float, default=1e-4)
+parser.add_argument('--decay', type=float, default=5e-2)
 parser.add_argument('--lr', type=float, default=0.01)
 parser.add_argument('--lr_steps', type=int, nargs='+', default=[20, 40])
 parser.add_argument('--lr_gamma', type=float, default=0.1)
@@ -120,9 +120,10 @@ best_acc = 0.0
 
 for epoch in range(args.epochs):
     train_xent(model, optimizer, train_loader, device)
+    acc_train = test_acc(model, train_loader, device)
     acc = test_acc(model, val_loader, device)
-    print('Epoch {:3d}/{:3d}| Acc@1: {:3.1f}%'.format(
-        epoch + 1, args.epochs, 100 * acc), flush=True)
+    print('Epoch {:3d}/{:3d}| Train Acc@1: {:3.1f}%| Test Acc@1: {:3.1f}%'.format(
+        epoch + 1, args.epochs, 100 * acc_train, 100 * acc), flush=True)
     if acc > best_acc:
         best_acc = acc
         torch.save(model.state_dict(), args.save_model_path)
