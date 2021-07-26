@@ -7,7 +7,7 @@ import numpy as np
 from scipy import special
 
 # Change based on environment
-path_to_bessel = "/home/gao463/Downloads/sesn-master/models/impl/bessel.npy"
+path_to_bessel = "/home/gao463/Downloads/sesn-master/models/impl/bessel.npy
 
 def cartesian_to_polar_coordinates(x, y):
     rho = np.sqrt(x**2 + y**2)
@@ -39,8 +39,8 @@ def calculate_FB_bases(L1, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
-    xx = xx/R*2**-alpha
-    yy = yy/R*2**-alpha
+    xx = xx/(R*alpha)
+    yy = yy/(R*alpha)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
