@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pdb
 
-from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E, steerable_F, steerable_G, steerable_H
+from .ses_basis import steerable_A, steerable_A1, steerable_B, steerable_C, steerable_D, steerable_D1, steerable_E, steerable_F, steerable_G, steerable_H
 from .ses_basis import normalize_basis_by_min_scale
 
 
@@ -40,20 +40,24 @@ class SESConv_Z2_H(nn.Module):
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'A1':
+            basis = steerable_A1(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'B':
             basis = steerable_B(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'C':
             basis = steerable_C(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'D':
             basis = steerable_D(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'D1':
+            basis = steerable_D1(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'E':
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'F':
             basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'G':
-            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)
+            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)            
         elif basis_type == 'H':
-            basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)
+            basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)     
             
         # basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
@@ -139,18 +143,22 @@ class SESConv_H_H(nn.Module):
 
         if basis_type == 'A':
             basis = steerable_A(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'A1':
+            basis = steerable_A1(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'B':
             basis = steerable_B(kernel_size, scales, effective_size, **kwargs)
         elif basis_type == 'C':
             basis = steerable_C(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'D':
             basis = steerable_D(kernel_size, scales, effective_size, **kwargs)
+        elif basis_type == 'D1':
+            basis = steerable_D1(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'E':
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'F':
             basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'G':
-            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)
+            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)            
         elif basis_type == 'H':
             basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)
 

@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as F
 import math
 from .fb import calculate_FB_bases, calculate_FB_bases_rot_scale, cartesian_to_polar_coordinates, calculate_FB_bases_rot_scale_gaussian
+import pdb
 
 
 def hermite_poly(X, n):
@@ -37,6 +38,43 @@ def hermite_poly_rot_scale(x, y, rot, scale, n, m):
     func *= np.polynomial.hermite_e.hermeval(rho*np.sin(theta)/scale, coeff2)
     func *= np.exp(-(rho**2)/(2*scale**2))
     return func
+
+
+def SL(X, n, spt):
+    """Sturm Liouvielle of order n+1 calculatd at X
+    """
+    # spt needs to be small
+    n=n+1
+    y = 0*X
+    mask = (X>-spt) & (X < spt)
+    y[mask] = np.sin(n*np.pi*X[mask]/2/spt+n*np.pi/2)
+    return y
+
+def SL_rot_scale(x, y, spt, rot, scale, n, m):
+    theta, rho = cartesian_to_polar_coordinates(x, y)
+    theta += rot
+    x_new = rho*np.cos(theta)
+    y_new = rho*np.sin(theta)
+    func = 1/scale**2
+    func *= SL(x_new/scale, n, spt)
+    func *= SL(y_new/scale, m, spt)
+    return func
+
+def SL_gaussian_rot_scale(x, y, spt, rot, scale, n, m):
+    theta, rho = cartesian_to_polar_coordinates(x, y)
+    theta += rot
+    x_new = rho*np.cos(theta)
+    y_new = rho*np.sin(theta)
+    func = 1/scale**2
+    func *= SL(x_new/scale, n, spt)
+    func *= SL(y_new/scale, m, spt)
+    func *= np.exp(-(rho**2)/(2*scale**2))
+    return func
+
+
+
+#####################################################################################
+
 
 
 def onescale_grid_hermite_gaussian(size, scale, max_order=None):
@@ -181,8 +219,6 @@ def multiscale_hermite_gaussian(size, base_scale, max_order=4, mult=2, num_funcs
     num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
     num_scales = math.ceil(num_funcs / num_funcs_per_scale)
     scales = [base_scale / (mult ** n) for n in range(num_scales)]
-    # print('hermite scales', scales)
-
     basis_x = []
     basis_y = []
 
@@ -195,29 +231,16 @@ def multiscale_hermite_gaussian(size, base_scale, max_order=4, mult=2, num_funcs
 
         order_y, order_x = np.indices([max_order + 1, max_order + 1])
         mask = order_y + order_x <= max_order
-        
-        # bx: (15, 5)
-        # by: (15, 5)
         bx = [G * hermite_poly(X / scale, n) for n in order_x[mask]]
         by = [G * hermite_poly(Y / scale, n) for n in order_y[mask]]
             
         basis_x.extend(bx)
         basis_y.extend(by)
-    
-    # basis_x[:49]: (49, 5)
-    # basis_y[:49]: (49, 5)
+
     basis_x = torch.Tensor(np.stack(basis_x))[:num_funcs]
     basis_y = torch.Tensor(np.stack(basis_y))[:num_funcs]
-    
-    # basis_x[:, :, None]: (49, 5, 1)
-    # basis_y[:, None, :]: (49, 1, 5)
     basis = torch.bmm(basis_x[:, :, None], basis_y[:, None, :])
-    # print(basis[1,:,:])
-    # print("multiscale basis.shape")
-    # print(basis.shape)
-    
-    # 49 basis in total, 25 is the filter map
-    # basis: (49, 5, 5)
+
     return basis
 
 def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None):
@@ -240,33 +263,81 @@ def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_o
         order_y, order_x = np.indices([max_order + 1, max_order + 1])
         mask = order_y + order_x <= max_order
         
-        # bx: (15, 5)
-        # by: (15, 5)
         bxy = []
-        # print(order_x[mask])
-        # print(order_y[mask])
         for i in range(len(order_x[mask])):
             n = order_x[mask][i]
             m = order_y[mask][i]
             base_n_m = hermite_poly_rot_scale(ugrid[:,0], ugrid[:,1], base_rotation, scale, n, m)
-            # print(base_n_m.shape)                
             bxy.append(base_n_m)
-        # print(np.array(bxy).shape)
         basis_xy.extend(bxy)
     
-    # basis_x[:49]: (49, 5)
-    # print("basis_xy.shape out for loop")
-    # print(np.array(basis_xy).shape)
     basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
     basis = basis.reshape(-1, size, size)
-    # print(basis[1,:,:])
-    # basis_x[:, :, None]: (49, 5, 1)
-    # basis_y[:, None, :]: (49, 1, 5)
-    # print("multiscale basis hermite rot scale.shape")
-    # print(basis.shape)
+    return basis
+
+def multiscale_SL_rot_scale(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None, spt=3.5):
+    '''Basis of Hermite polynomials with Gaussian Envelope.
+    The maximum order is shared between functions. More functions are added
+    by decreasing the scale.
+    '''
+    num_funcs = num_funcs or size ** 2
+    num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
+    num_scales = math.ceil(num_funcs / num_funcs_per_scale)
+    scales = [base_scale / (mult ** n) for n in range(num_scales)]
+
+    basis_xy = []
+
+    X, Y = np.meshgrid(range(-(size // 2), (size // 2)+1), range(-(size // 2), (size // 2)+1))
+    ugrid = np.concatenate([Y.reshape(-1,1), X.reshape(-1,1)], 1)
+
+    for scale in scales:
+        order_y, order_x = np.indices([max_order + 1, max_order + 1])
+        mask = order_y + order_x <= max_order
+        
+        bxy = []
+        for i in range(len(order_x[mask])):
+            n = order_x[mask][i]
+            m = order_y[mask][i]
+            base_n_m = SL_rot_scale(ugrid[:,0], ugrid[:,1], spt, base_rotation, scale, n, m)
+            bxy.append(base_n_m)
+        basis_xy.extend(bxy)
     
-    # 49 basis in total, 25 is the filter map
-    # basis: (49, 5, 5)
+    basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
+    basis = basis.reshape(-1, size, size)
+    return basis
+
+
+
+
+def multiscale_SL_gaussian_rot_scale(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None, spt=3.5):
+    '''Basis of Hermite polynomials with Gaussian Envelope.
+    The maximum order is shared between functions. More functions are added
+    by decreasing the scale.
+    '''
+    num_funcs = num_funcs or size ** 2
+    num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
+    num_scales = math.ceil(num_funcs / num_funcs_per_scale)
+    scales = [base_scale / (mult ** n) for n in range(num_scales)]
+
+    basis_xy = []
+
+    X, Y = np.meshgrid(range(-(size // 2), (size // 2)+1), range(-(size // 2), (size // 2)+1))
+    ugrid = np.concatenate([Y.reshape(-1,1), X.reshape(-1,1)], 1)
+
+    for scale in scales:
+        order_y, order_x = np.indices([max_order + 1, max_order + 1])
+        mask = order_y + order_x <= max_order
+        
+        bxy = []
+        for i in range(len(order_x[mask])):
+            n = order_x[mask][i]
+            m = order_y[mask][i]
+            base_n_m = SL_gaussian_rot_scale(ugrid[:,0], ugrid[:,1], spt, base_rotation, scale, n, m)
+            bxy.append(base_n_m)
+        basis_xy.extend(bxy)
+    
+    basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
+    basis = basis.reshape(-1, size, size)
     return basis
 
 
@@ -323,12 +394,12 @@ def multiscale_fourier_bessel_rot_scale(size, base_rotation, base_scale, max_ord
 
     for scale in scales:
         # psi_scale.shape = (25, 15)
-        psi_scale, _, _ = calculate_FB_bases_rot_scale(int((size-1)/2), base_rotation, scale, 15)
+        psi_scale, _, _ = calculate_FB_bases_rot_scale(int((size-1)/2), base_rotation, scale, num_funcs_per_scale)
         # psi_scale.shape = (15, 25)
         psi_scale = psi_scale.transpose()
         # psi_scale *= 2**(-2*scale)
         # print(psi_scale.shape)
-        basis_xy[count*15:(1+count)*15] = psi_scale.reshape(15, size, size)
+        basis_xy[count*num_funcs_per_scale:(1+count)*num_funcs_per_scale] = psi_scale.reshape(num_funcs_per_scale, size, size)
         count += 1
     
     # basis_xy: (49, 5, 5)
@@ -358,12 +429,12 @@ def multiscale_gaussian_fourier_bessel_rot_scale(size, base_rotation, base_scale
 
     for scale in scales:
         # psi_scale.shape = (25, 15)
-        psi_scale, _, _ = calculate_FB_bases_rot_scale_gaussian(int((size-1)/2), base_rotation, scale, 15)
+        psi_scale, _, _ = calculate_FB_bases_rot_scale_gaussian(int((size-1)/2), base_rotation, scale, num_funcs_per_scale)
         # psi_scale.shape = (15, 25)
         psi_scale = psi_scale.transpose()
         # psi_scale *= 2**(-2*scale)
         # print(psi_scale.shape)
-        basis_xy[count*15:(1+count)*15] = psi_scale.reshape(15, size, size)
+        basis_xy[count*num_funcs_per_scale:(1+count)*num_funcs_per_scale] = psi_scale.reshape(num_funcs_per_scale, size, size)
         count += 1
     
     # basis_xy: (49, 5, 5)
@@ -540,9 +611,73 @@ def steerable_F(size, rotations, scales, effective_size, **kwargs):
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
 
+# add rotation channel with multiscale basis using SL NO gaussian
+def steerable_G(size, rotations, scales, effective_size, **kwargs):
+    mult = kwargs.get('mult', 1.2)
+    max_order = kwargs.get('max_order', 4)
+    spt = kwargs.get('spt', 3.5)
+    num_funcs = effective_size**2
+    max_scale = max(scales)
+    basis_tensors = []
+    for rotation in rotations:
+        for scale in scales:
+            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            # print("size_before_pad")
+            # print(size_before_pad)
+            assert size_before_pad > 1
+            basis = multiscale_SL_rot_scale(size_before_pad,
+                                                base_rotation=rotation,
+                                                base_scale=scale,
+                                                max_order=max_order,
+                                                mult=mult,
+                                                num_funcs=num_funcs,
+                                                spt=spt)
+            basis = basis[None, :, :, :]
+            pad_size = (size - size_before_pad) // 2
+            basis = F.pad(basis, [pad_size] * 4)[0]
+            basis_tensors.append(basis)
+    steerable_basis = torch.stack(basis_tensors, 1)
+    print("steerable_C_basis.shape")
+    print(steerable_basis.shape)
+    # steerable_basis: (49, 16, 15, 15)
+    return steerable_basis
+
+
+
+# add rotation channel with multiscale basis using SL gaussian
+def steerable_H(size, rotations, scales, effective_size, **kwargs):
+    mult = kwargs.get('mult', 1.2)
+    max_order = kwargs.get('max_order', 4)
+    spt = kwargs.get('spt', 3.5)
+    num_funcs = effective_size**2
+    max_scale = max(scales)
+    basis_tensors = []
+    for rotation in rotations:
+        for scale in scales:
+            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            # print("size_before_pad")
+            # print(size_before_pad)
+            assert size_before_pad > 1
+            basis = multiscale_SL_gaussian_rot_scale(size_before_pad,
+                                                base_rotation=rotation,
+                                                base_scale=scale,
+                                                max_order=max_order,
+                                                mult=mult,
+                                                num_funcs=num_funcs,
+                                                spt=spt)
+            basis = basis[None, :, :, :]
+            pad_size = (size - size_before_pad) // 2
+            basis = F.pad(basis, [pad_size] * 4)[0]
+            basis_tensors.append(basis)
+    steerable_basis = torch.stack(basis_tensors, 1)
+    print("steerable_C_basis.shape")
+    print(steerable_basis.shape)
+    # steerable_basis: (49, 16, 15, 15)
+    return steerable_basis
+
 
 # only have onescale basis with Fourier-Bessel
-def steerable_G(size, rotations, scales, effective_size, **kwargs):
+def steerable_D1(size, rotations, scales, effective_size, **kwargs):
     mult = kwargs.get('mult', 1.2)
     max_order = kwargs.get('max_order', 4)
     num_funcs = effective_size**2
@@ -572,7 +707,7 @@ def steerable_G(size, rotations, scales, effective_size, **kwargs):
     return steerable_basis
 
 # only have onescale basis with Hermite Gaussian
-def steerable_H(size, rotations, scales, effective_size, **kwargs):
+def steerable_A1(size, rotations, scales, effective_size, **kwargs):
     mult = kwargs.get('mult', 1.2)
     max_order = effective_size - 1
     num_funcs = effective_size**2

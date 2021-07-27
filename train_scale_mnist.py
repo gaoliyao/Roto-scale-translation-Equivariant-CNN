@@ -23,14 +23,14 @@ model_names = sorted(name for name in models.__dict__
 
 
 parser = ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=64)
+parser.add_argument('--batch_size', type=int, default=128)
 parser.add_argument('--epochs', type=int, default=60)
 
 parser.add_argument('--optim', type=str, default='adam', choices=['adam', 'sgd'])
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--nesterov', action='store_true', default=False)
-parser.add_argument('--decay', type=float, default=5e-2)
-parser.add_argument('--lr', type=float, default=0.01)
+parser.add_argument('--decay', type=float, default=1e-4)
+parser.add_argument('--lr', type=float, default=0.005)
 parser.add_argument('--lr_steps', type=int, nargs='+', default=[20, 40])
 parser.add_argument('--lr_gamma', type=float, default=0.1)
 
@@ -57,9 +57,9 @@ assert len(args.save_model_path)
 #########################################
 # Data
 #########################################
-train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir)
-val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir, args.extra_scaling)
-test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir, args.extra_scaling)
+train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir, args.extra_scaling)
+val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir)
+test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir)
 
 
 print('Train:')
