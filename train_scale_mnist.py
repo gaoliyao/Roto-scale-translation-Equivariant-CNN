@@ -57,9 +57,9 @@ assert len(args.save_model_path)
 #########################################
 # Data
 #########################################
-train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir, args.extra_scaling)
-val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir)
-test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir)
+train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir)
+val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir, args.extra_scaling)
+test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir, args.extra_scaling)
 
 
 print('Train:')

@@ -39,8 +39,8 @@ def calculate_FB_bases(L1, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
-    xx = xx/R*2**-alpha
-    yy = yy/R*2**-alpha
+    xx = xx/(R*alpha)
+    yy = yy/(R*alpha)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
@@ -134,6 +134,7 @@ def calculate_FB_bases(L1, alpha, maxK):
 # maxK: maximum number of basis
 # Output: 
 # psi: FB basis with shape: (filter_map^2, num_basis)
+# 1.7, ..., 5.1
 def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
     '''
     s = 2^alpha is the scale

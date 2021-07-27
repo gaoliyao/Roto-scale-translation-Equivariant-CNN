@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pdb
 
-from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E, steerable_F
+from .ses_basis import steerable_A, steerable_B, steerable_C, steerable_D, steerable_E, steerable_F, steerable_G, steerable_H
 from .ses_basis import normalize_basis_by_min_scale
 
 
@@ -50,8 +50,12 @@ class SESConv_Z2_H(nn.Module):
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'F':
             basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'G':
+            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'H':
+            basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)
             
-        basis = normalize_basis_by_min_scale(basis)
+        # basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
 
         self.num_funcs = self.basis.size(0)
@@ -145,8 +149,12 @@ class SESConv_H_H(nn.Module):
             basis = steerable_E(kernel_size, self.rotations, scales, effective_size, **kwargs)
         elif basis_type == 'F':
             basis = steerable_F(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'G':
+            basis = steerable_G(kernel_size, self.rotations, scales, effective_size, **kwargs)
+        elif basis_type == 'H':
+            basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)
 
-        basis = normalize_basis_by_min_scale(basis)
+        # basis = normalize_basis_by_min_scale(basis)
         self.register_buffer('basis', basis)
 
         self.num_funcs = self.basis.size(0)
@@ -251,4 +259,5 @@ class SESConv_H_H_1x1(nn.Conv2d):
 class SESMaxProjection(nn.Module):
 
     def forward(self, x):
+        # x = (batch, in*out, rot*scale, height, width)
         return x.max(2)[0]

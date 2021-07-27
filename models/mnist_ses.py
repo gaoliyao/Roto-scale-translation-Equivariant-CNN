@@ -99,6 +99,7 @@ class MNIST_SES_V(nn.Module):
         x = self.linear(x)
         return x
 
+test_basis_type = 'E'
 
 def mnist_ses_scalar_28_rot_1(**kwargs):
     num_scales = 4
@@ -112,7 +113,7 @@ def mnist_ses_scalar_28_rot_1(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [0.0]
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                             basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_scalar_28_rot_4(**kwargs):
@@ -127,7 +128,22 @@ def mnist_ses_scalar_28_rot_4(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/4 for x in range(4)]
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                             basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_scalar_28_rot_6(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 1*np.pi/3 for x in range(6)]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
     return model
 
     
@@ -143,7 +159,7 @@ def mnist_ses_scalar_28_rot_8(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                             basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
@@ -159,7 +175,7 @@ def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
     rotations = [x * 2*np.pi/8 for x in range(8)]    
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=1,
-                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_4(**kwargs):
@@ -175,7 +191,7 @@ def mnist_ses_vector_28_rot_8_interrot_4(**kwargs):
     rotations = [x * 2*np.pi/8 for x in range(8)]    
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=4,
-                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
@@ -191,7 +207,95 @@ def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
     rotations = [x * 2*np.pi/8 for x in range(8)]    
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=8,
-                        basis_type='C', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=test_basis_type, mult=mult, max_order=4, dropout=dropout)
+    return model
+
+
+def mnist_res_scalar_28_rot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [0.0]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type="G", mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_res_scalar_28_rot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type="G", mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_res_scalar_28_rot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type="G", mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_res_vector_28_rot_8_interrot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=1,
+                        basis_type="G", mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_res_vector_28_rot_8_interrot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=4,
+                        basis_type="G", mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_res_vector_28_rot_8_interrot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [1.0]
+    rotations = [x * 2*np.pi/8 for x in range(8)]    
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=8,
+                        basis_type="G", mult=mult, max_order=4, dropout=dropout)
     return model
 
     

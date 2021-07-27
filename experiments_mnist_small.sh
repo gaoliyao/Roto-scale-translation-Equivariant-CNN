@@ -12,9 +12,9 @@ function train_scale_mnist() {
     do 
         data_dir="$MNIST_SCALE_DIR/MNIST_scale/seed_$seed/scale_0.3_1.0"
         python train_scale_mnist.py \
-            --batch_size 64 \
+            --batch_size 128 \
             --epochs 60 \
-            --optim sgd \
+            --optim adam \
             --lr 0.01 \
             --lr_steps 20 40 \
             --model $1 \
@@ -36,20 +36,19 @@ function train_scale_mnist() {
 #)
 
 model_list=(
-    "mnist_ses_scalar_28_rot_1"              # scalar, no rotation
-    "mnist_ses_scalar_28_rot_4"              # scalar, 4 rotations
+    "mnist_res_scalar_28_rot_8"              # scalar, 8 rotations
     "mnist_ses_scalar_28_rot_8"              # scalar, 8 rotations
-    "mnist_ses_vector_28_rot_8_interrot_1"   # vector, 8 rotations
+    #"mnist_res_vector_28_rot_8_interrot_1"   # vector, 8 rotations
                                              # no rotation convolution
-    "mnist_ses_vector_28_rot_8_interrot_4"   # vector, 8 rotations
+    #"mnist_res_vector_28_rot_8_interrot_4"   # vector, 8 rotations
                                              # 4 rotation convolution
-    "mnist_ses_vector_28_rot_8_interrot_8"   # vector, 8 rotations
+    #"mnist_res_vector_28_rot_8_interrot_8"   # vector, 8 rotations
                                              # 8 rotation convolution
 )
 
 for model_name in "${model_list[@]}"
 do
-    for extra_scaling in 1.0
+    for extra_scaling in 0.5
     do 
         train_scale_mnist "$model_name" "$extra_scaling" 
     done
