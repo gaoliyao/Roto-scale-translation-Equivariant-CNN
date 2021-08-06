@@ -112,7 +112,7 @@ def mnist_ses_scalar_28_rot_1(**kwargs):
     rotations = [0.0]
     spt = 3.5
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='G', mult=mult, max_order=4, dropout=dropout, spt=spt)
+                             basis_type='E', mult=mult, max_order=4, dropout=dropout, spt=spt)
     return model
 
 def mnist_ses_scalar_28_rot_4(**kwargs):
@@ -128,10 +128,10 @@ def mnist_ses_scalar_28_rot_4(**kwargs):
     rotations = [x * 2*np.pi/4 for x in range(4)]
     spt = 3.5    
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='G', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='E', mult=mult, max_order=4, dropout=dropout)
     return model
 
-    
+
 def mnist_ses_scalar_28_rot_8(**kwargs):
     num_scales = 4
     factor = 3.0
@@ -145,7 +145,7 @@ def mnist_ses_scalar_28_rot_8(**kwargs):
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='G', mult=mult, max_order=4, dropout=dropout)
+                             basis_type='E', mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
@@ -160,9 +160,10 @@ def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=1,
-                        basis_type='G', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_4(**kwargs):
@@ -177,9 +178,10 @@ def mnist_ses_vector_28_rot_8_interrot_4(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=4,
-                        basis_type='G', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
@@ -196,7 +198,7 @@ def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
     spt = 3.5
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=8,
-                        basis_type='G', mult=mult, max_order=4, dropout=dropout)
+                        basis_type='E', mult=mult, max_order=4, dropout=dropout)
     return model
     
 '''

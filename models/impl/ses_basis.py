@@ -275,6 +275,34 @@ def multiscale_hermite_gaussian_rot_scale(size, base_rotation, base_scale, max_o
     basis = basis.reshape(-1, size, size)
     return basis
 
+def onescale_SL_rot_scale(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None, spt=3.5):
+    '''
+    The maximum order is shared between functions. More functions are added
+    by decreasing the scale.
+    '''
+    num_funcs = num_funcs or size ** 2
+
+    basis_xy = []
+
+    X, Y = np.meshgrid(range(-(size // 2), (size // 2)+1), range(-(size // 2), (size // 2)+1))
+    ugrid = np.concatenate([Y.reshape(-1,1), X.reshape(-1,1)], 1)
+
+    order_y, order_x = np.indices([max_order + 1, max_order + 1])
+    # mask = order_y + order_x <= max_order
+
+    bxy = []
+    for i in range(len(order_x)):
+        for j in range(len(order_y)):
+            n = order_x[i][j]
+            m = order_y[i][j]
+            base_n_m = SL_rot_scale(ugrid[:,0], ugrid[:,1], spt, base_rotation, base_scale, n, m)
+            bxy.append(base_n_m)
+    basis_xy.extend(bxy)
+    
+    basis = torch.Tensor(np.stack(basis_xy))[:num_funcs]
+    basis = basis.reshape(-1, size, size)
+    return basis
+
 def multiscale_SL_rot_scale(size, base_rotation, base_scale, max_order=4, mult=2, num_funcs=None, spt=3.5):
     '''Basis of Hermite polynomials with Gaussian Envelope.
     The maximum order is shared between functions. More functions are added
@@ -386,7 +414,7 @@ def multiscale_fourier_bessel_rot_scale(size, base_rotation, base_scale, max_ord
     num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
     num_scales = math.ceil(num_funcs / num_funcs_per_scale)
     scales = [base_scale / (mult ** n) for n in range(num_scales)]
-    # print('hermite scales', scales)
+    print('hermite scales', scales)
     
     # num_basis_ind = 15
     basis_xy = np.zeros([60, size, size])
@@ -558,11 +586,14 @@ def steerable_E(size, rotations, scales, effective_size, **kwargs):
     max_scale = max(scales)
     basis_tensors = []
     print(scales)
+    # 1.7, ..., 5.1
     for rotation in rotations:
         for scale in scales:
-            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-            # print("size_before_pad")
-            # print(size_before_pad)
+            # size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            size_before_pad = int(size * max_scale / max_scale) // 2 * 2 + 1
+            # 15
+            print("size_before_pad")
+            print(size_before_pad)
             assert size_before_pad > 1
             basis = multiscale_fourier_bessel_rot_scale(size_before_pad,
                                                 base_rotation=rotation,
@@ -622,6 +653,7 @@ def steerable_G(size, rotations, scales, effective_size, **kwargs):
     for rotation in rotations:
         for scale in scales:
             size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            # size_before_pad = int(size * max_scale / max_scale) // 2 * 2 + 1
             # print("size_before_pad")
             # print(size_before_pad)
             assert size_before_pad > 1
@@ -637,7 +669,38 @@ def steerable_G(size, rotations, scales, effective_size, **kwargs):
             basis = F.pad(basis, [pad_size] * 4)[0]
             basis_tensors.append(basis)
     steerable_basis = torch.stack(basis_tensors, 1)
-    print("steerable_C_basis.shape")
+    print("steerable_G_basis.shape")
+    print(steerable_basis.shape)
+    # steerable_basis: (49, 16, 15, 15)
+    return steerable_basis
+
+# add rotation channel with multiscale basis using SL NO gaussian
+def steerable_G1(size, rotations, scales, effective_size, **kwargs):
+    mult = kwargs.get('mult', 1.2)
+    max_order = kwargs.get('max_order', 4)
+    spt = kwargs.get('spt', 3.5)
+    num_funcs = effective_size**2
+    max_scale = max(scales)
+    basis_tensors = []
+    for rotation in rotations:
+        for scale in scales:
+            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
+            # print("size_before_pad")
+            # print(size_before_pad)
+            assert size_before_pad > 1
+            basis = onescale_SL_rot_scale(size_before_pad,
+                                                base_rotation=rotation,
+                                                base_scale=scale,
+                                                max_order=max_order,
+                                                mult=mult,
+                                                num_funcs=num_funcs,
+                                                spt=spt)
+            basis = basis[None, :, :, :]
+            pad_size = (size - size_before_pad) // 2
+            basis = F.pad(basis, [pad_size] * 4)[0]
+            basis_tensors.append(basis)
+    steerable_basis = torch.stack(basis_tensors, 1)
+    print("steerable_G1_basis.shape")
     print(steerable_basis.shape)
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
@@ -670,7 +733,7 @@ def steerable_H(size, rotations, scales, effective_size, **kwargs):
             basis = F.pad(basis, [pad_size] * 4)[0]
             basis_tensors.append(basis)
     steerable_basis = torch.stack(basis_tensors, 1)
-    print("steerable_C_basis.shape")
+    print("steerable_H_basis.shape")
     print(steerable_basis.shape)
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
@@ -686,9 +749,9 @@ def steerable_D1(size, rotations, scales, effective_size, **kwargs):
     print(scales)
     for rotation in rotations:
         for scale in scales:
-            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-            # print("size_before_pad")
-            # print(size_before_pad)
+            size_before_pad = int(size * max_scale / max_scale) // 2 * 2 + 1
+            print("size_before_pad")
+            print(size_before_pad)
             assert size_before_pad > 1
             basis = onescale_fourier_bessel_rot_scale(size_before_pad,
                                                 base_rotation=rotation,
@@ -701,7 +764,7 @@ def steerable_D1(size, rotations, scales, effective_size, **kwargs):
             basis = F.pad(basis, [pad_size] * 4)[0]
             basis_tensors.append(basis)
     steerable_basis = torch.stack(basis_tensors, 1)
-    print("steerable_G_basis.shape")
+    print("steerable_D1_basis.shape")
     print(steerable_basis.shape)
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
@@ -730,7 +793,7 @@ def steerable_A1(size, rotations, scales, effective_size, **kwargs):
             basis = F.pad(basis, [pad_size] * 4)[0]
             basis_tensors.append(basis)
     steerable_basis = torch.stack(basis_tensors, 1)
-    print("steerable_H_basis.shape")
+    print("steerable_A1_basis.shape")
     print(steerable_basis.shape)
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis

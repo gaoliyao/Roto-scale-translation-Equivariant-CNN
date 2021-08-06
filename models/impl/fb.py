@@ -39,8 +39,8 @@ def calculate_FB_bases(L1, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
-    xx = xx/(R*alpha)
-    yy = yy/(R*alpha)
+    xx = xx/(R)
+    yy = yy/(R)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
@@ -142,7 +142,11 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
     maxK is the maximum num of bases you need
     '''
     #maxK = (2 * L1 + 1)**2 - 1
-    maxK = np.min([(2 * L1 + 1)**2 - 1, maxK])
+    # maxK = np.min([(2 * L1 + 1)**2 - 1, maxK])
+    # print("L1")
+    # print((2 * L1 + 1)**2 - 1)
+    # print(maxK)
+    # print("=========")
 
     L = L1 + 1
     R = L1 + 0.5
@@ -153,9 +157,19 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
         truncate_freq_factor = 2
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
-
-    xx = xx/(R*alpha)
-    yy = yy/(R*alpha)
+    
+    # xx/(5*1.7)
+    # (-1.7, 0)
+    # (1, 3)
+    # xx = 2**-alpha*xx/(R)
+    
+    # (0.5, 7.8)
+    xx = alpha*xx/(R)
+    yy = alpha*yy/(R)
+    
+    # 
+    # xx = xx/(R*alpha)
+    # yy = yy/(R*alpha)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
@@ -197,10 +211,13 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
         r0grid=rgrid*R_ns[i]
 
         F = special.jv(ki, r0grid)
-
+        
+        # * alpha**2
         Phi = 1./np.abs(special.jv(ki+1, R_ns[i]))*F
-
-        Phi[rgrid >=1]=0
+        
+        # (theta, rho)
+        # support: R*alpha
+        Phi[rgrid >=1] = 0
 
         Phi_ns[:, i] = Phi
 
@@ -271,8 +288,8 @@ def calculate_FB_bases_rot_scale_gaussian(L1, theta, alpha, maxK):
     # xx = xx/R*2**-alpha
     # yy = yy/R*2**-alpha
     
-    xx = xx/(R*alpha)
-    yy = yy/(R*alpha)
+    xx = xx/(R)
+    yy = yy/(R)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid

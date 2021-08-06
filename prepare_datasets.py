@@ -88,7 +88,7 @@ def make_mnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max
     https://arxiv.org/pdf/1807.11783.pdf
     https://arxiv.org/pdf/1906.03861.pdf
     '''
-    MNIST_TRAIN_SIZE = 15000
+    MNIST_TRAIN_SIZE = 10000
     MNIST_VAL_SIZE = 2000
     MNIST_TEST_SIZE = 50000
 
@@ -112,6 +112,41 @@ def make_mnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max
 
     dest = os.path.expanduser(dest)
     dataset_path = os.path.join(dest, 'MNIST_scale', "seed_{}".format(seed))
+    dataset_path  = os.path.join(dataset_path, "scale_{}_{}".format(min_scale, max_scale))
+    print('OUTPUT: {}'.format(dataset_path))
+
+    idx = _save_images_to_folder(train, transform, dataset_path, 'train', 0, '.png')
+    idx = _save_images_to_folder(test, transform, dataset_path, 'test', idx, '.png')
+    idx = _save_images_to_folder(val, transform, dataset_path, 'val', idx, '.png')
+    
+def make_fmnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, max_scale, download=False, seed=0, **kwargs):
+    '''
+    Following a similar procedure to the previous function (make_mnist_rotation_scale_50k)
+    '''
+    FMNIST_TRAIN_SIZE = 10000
+    FMNIST_VAL_SIZE = 2000
+    FMNIST_TEST_SIZE = 50000
+
+    np.random.seed(seed)
+    random.seed(seed)
+    # 3 stands for PIL.Image.BICUBIC
+    transform = transforms.RandomAffine([min_rot, max_rot], scale=(min_scale, max_scale), resample=3)
+
+    dataset_train = datasets.FashionMNIST(root=source, train=True, download=download)
+    dataset_test = datasets.FashionMNIST(root=source, train=False, download=download)
+    concat_dataset = ConcatDataset([dataset_train, dataset_test])
+
+    labels = [el[1] for el in concat_dataset]
+    train_val_size = FMNIST_TRAIN_SIZE + FMNIST_VAL_SIZE
+    train_val, test = train_test_split(concat_dataset, train_size=train_val_size,
+                                       test_size=FMNIST_TEST_SIZE, stratify=labels)
+
+    labels = [el[1] for el in train_val]
+    train, val = train_test_split(train_val, train_size=FMNIST_TRAIN_SIZE,
+                                  test_size=FMNIST_VAL_SIZE, stratify=labels)
+
+    dest = os.path.expanduser(dest)
+    dataset_path = os.path.join(dest, 'FMNIST_scale', "seed_{}".format(seed))
     dataset_path  = os.path.join(dataset_path, "scale_{}_{}".format(min_scale, max_scale))
     print('OUTPUT: {}'.format(dataset_path))
 
@@ -150,4 +185,4 @@ if __name__ == '__main__':
         for k, v in vars(args).items():
             print('{}={}'.format(k, v))
 
-        make_mnist_rotation_scale_50k(**vars(args))
+        make_fmnist_rotation_scale_50k(**vars(args))
