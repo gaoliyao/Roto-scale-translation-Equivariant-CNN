@@ -111,8 +111,9 @@ def mnist_ses_scalar_28_rot_1(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [0.0]
     spt = 3.5
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='E', mult=mult, max_order=4, dropout=dropout, spt=spt)
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout, spt=spt)
     return model
 
 def mnist_ses_scalar_28_rot_4(**kwargs):
@@ -126,9 +127,28 @@ def mnist_ses_scalar_28_rot_4(**kwargs):
     scales = [min_scale * q**i for i in range(num_scales)]
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/4 for x in range(4)]
-    spt = 3.5    
+    spt = 3.5   
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='E', mult=mult, max_order=4, dropout=dropout)
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return model
+
+def mnist_ses_vector_28_rot_4_interrot_2(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=2,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
 
@@ -144,8 +164,9 @@ def mnist_ses_scalar_28_rot_8(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_Scalar(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
-                             basis_type='E', mult=mult, max_order=4, dropout=dropout)
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
 def mnist_ses_vector_28_rot_8_interrot_1(**kwargs):
@@ -196,10 +217,152 @@ def mnist_ses_vector_28_rot_8_interrot_8(**kwargs):
     scales = [round(s, 2) for s in scales]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
+    basis = kwargs.get('basis', "E")
     model = MNIST_SES_V(pool_size=4, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=8,
-                        basis_type='E', mult=mult, max_order=4, dropout=dropout)
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
+
+def mnist_ses_scalar_56_rot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [0.0]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_Scalar(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout, spt=spt)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_scalar_56_rot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    spt = 3.5   
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_Scalar(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_vector_56_rot_4_interrot_2(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=2,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_vector_56_rot_4_interrot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/4 for x in range(4)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=4,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_scalar_56_rot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_Scalar(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                             basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_vector_56_rot_8_interrot_1(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=1,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_vector_56_rot_8_interrot_4(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=4,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
+
+def mnist_ses_vector_56_rot_8_interrot_8(**kwargs):
+    num_scales = 4
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
+    dropout = 0.7
+    q = factor ** (1 / (num_scales - 1))
+    scales = [min_scale * q**i for i in range(num_scales)]
+    scales = [round(s, 2) for s in scales]
+    rotations = [x * 2*np.pi/8 for x in range(8)]
+    spt = 3.5
+    basis = kwargs.get('basis', "E")
+    model = MNIST_SES_V(pool_size=8, kernel_size=size, scales=scales, rotations=rotations,
+                        scale_size=1, rotation_size=8,
+                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
+    return nn.Sequential(nn.Upsample(scale_factor=2), model)
     
 '''
 def mnist_ses_vector_56p(**kwargs):

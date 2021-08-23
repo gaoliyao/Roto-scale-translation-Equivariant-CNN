@@ -39,8 +39,8 @@ def calculate_FB_bases(L1, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
 
-    xx = xx/(R)
-    yy = yy/(R)
+    xx = alpha*xx/(R)
+    yy = alpha*yy/(R)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
@@ -135,18 +135,17 @@ def calculate_FB_bases(L1, alpha, maxK):
 # Output: 
 # psi: FB basis with shape: (filter_map^2, num_basis)
 # 1.7, ..., 5.1
-def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
+
+# Revisions made to this function (23/Aug/2021)
+# [Change 1]: add support to control the boundary
+# spt=1.5 is the current best
+def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK, spt=1.5):
     '''
     s = 2^alpha is the scale
     alpha <= 0
     maxK is the maximum num of bases you need
     '''
-    #maxK = (2 * L1 + 1)**2 - 1
-    # maxK = np.min([(2 * L1 + 1)**2 - 1, maxK])
-    # print("L1")
-    # print((2 * L1 + 1)**2 - 1)
-    # print(maxK)
-    # print("=========")
+    maxK = np.min([(2 * L1 + 1)**2 - 1, maxK])
 
     L = L1 + 1
     R = L1 + 0.5
@@ -158,18 +157,20 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
 
     xx, yy = np.meshgrid(range(-L, L+1), range(-L, L+1))
     
-    # xx/(5*1.7)
-    # (-1.7, 0)
-    # (1, 3)
-    # xx = 2**-alpha*xx/(R)
+    # [Change 2]: change of grid old version
+    # xx = alpha*xx/(R)
+    # yy = alpha*yy/(R)
     
-    # (0.5, 7.8)
-    xx = alpha*xx/(R)
-    yy = alpha*yy/(R)
+    # [Change 2]: change of grid to new version
+    # Version 1: this works with good performance
+    # alpha *= 2.5
+    # alpha *= 2.5
+    # xx = xx/(alpha)
+    # yy = yy/(alpha)
     
-    # 
-    # xx = xx/(R*alpha)
-    # yy = yy/(R*alpha)
+    # Version 2: this also works with good performance
+    xx = xx/(2.5*alpha)
+    yy = yy/(2.5*alpha)
 
     ugrid = np.concatenate([yy.reshape(-1,1), xx.reshape(-1,1)], 1)
     # angleGrid, lengthGrid
@@ -212,12 +213,11 @@ def calculate_FB_bases_rot_scale(L1, theta, alpha, maxK):
 
         F = special.jv(ki, r0grid)
         
-        # * alpha**2
-        Phi = 1./np.abs(special.jv(ki+1, R_ns[i]))*F
+        # [Change 3]: *(1/alpha)**2
+        Phi = 1./np.abs(special.jv(ki+1, R_ns[i]))*F*(1/alpha**2)
         
-        # (theta, rho)
-        # support: R*alpha
-        Phi[rgrid >=1] = 0
+        # [Change 4]: spt used to be 1. Now we change to spt (=1.5) in this case. 
+        Phi[rgrid >= spt] = 0
 
         Phi_ns[:, i] = Phi
 
@@ -375,3 +375,4 @@ def calculate_FB_bases_rot_scale_gaussian(L1, theta, alpha, maxK):
     psi = psi/c
 
     return psi, c, kq_Psi
+# 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

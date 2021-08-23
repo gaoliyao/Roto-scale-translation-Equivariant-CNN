@@ -168,6 +168,7 @@ class SESConv_H_H(nn.Module):
             basis = steerable_H(kernel_size, self.rotations, scales, effective_size, **kwargs)
 
         basis = normalize_basis_by_min_scale(basis)
+        print("Normalized!!")
         self.register_buffer('basis', basis)
 
         self.num_funcs = self.basis.size(0)
@@ -227,6 +228,8 @@ class SESConv_H_H(nn.Module):
         # to be complete
         for i in range(self.rotation_size):
             for j in range(self.scale_size):
+                # print("rotation difference")
+                # print(x[:, :, i, j:j + self.num_scales]-x[:, :, i+1, j:j + self.num_scales])
                 x_ = x[:, :, i:i + self.num_rotations, j:j + self.num_scales]
                 # expand X
                 B, C, R, S, H, W = x_.shape

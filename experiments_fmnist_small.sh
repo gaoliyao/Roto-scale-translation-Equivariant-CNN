@@ -18,7 +18,7 @@ function train_scale_fmnist() {
             --lr 0.01 \
             --lr_steps 20 40 \
             --model $1 \
-            --basis "C"\
+            --basis "E"\
             --save_model_path "./saved_models/fmnist/$1_extra_scaling_$2.pt" \
             --cuda \
             --extra_scaling $2 \
@@ -36,8 +36,10 @@ function train_scale_fmnist() {
 #    "mnist_ses_vector_28p"  # MNIST (28x28) +
 #)
 
-model_list=(
-    "mnist_ses_vector_28_rot_8_interrot_4"              # scalar, 8 rotations           
+model_list=(    
+    "mnist_ses_scalar_56_rot_8"              # scalar, 8 rotations                   
+    "mnist_ses_vector_56_rot_8_interrot_1"              # scalar, 8 rotations            
+    "mnist_ses_vector_56_rot_8_interrot_4"              # scalar, 8 rotations                          
 )
 
 for model_name in "${model_list[@]}"

@@ -414,7 +414,7 @@ def multiscale_fourier_bessel_rot_scale(size, base_rotation, base_scale, max_ord
     num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
     num_scales = math.ceil(num_funcs / num_funcs_per_scale)
     scales = [base_scale / (mult ** n) for n in range(num_scales)]
-    print('hermite scales', scales)
+    # print('hermite scales', scales)
     
     # num_basis_ind = 15
     basis_xy = np.zeros([60, size, size])
@@ -548,6 +548,14 @@ def steerable_C(size, rotations, scales, effective_size, **kwargs):
     steerable_basis = torch.stack(basis_tensors, 1)
     print("steerable_C_basis.shape")
     print(steerable_basis.shape)
+    print("steerable_basis[0]")
+    print(steerable_basis[0][0])
+    print("steerable_basis[1]")
+    print(steerable_basis[0][1])
+    print("steerable_basis[2]")
+    print(steerable_basis[0][2])
+    print("steerable_basis[3]")
+    print(steerable_basis[0][3])
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
 
@@ -579,22 +587,23 @@ def steerable_D(size, scales, effective_size, **kwargs):
     return steerable_basis
 
 # add rotation channel with multiscale basis using Fourier-Bessel
+# Revisions made to this function (23/Aug/2021)
 def steerable_E(size, rotations, scales, effective_size, **kwargs):
     mult = kwargs.get('mult', 1.2)
     max_order = kwargs.get('max_order', 4)
     num_funcs = effective_size**2
     max_scale = max(scales)
+    min_scale = min(scales)
     basis_tensors = []
-    print(scales)
+    print("Steerable_E basis scales")
+    # print(scales)
     # 1.7, ..., 5.1
     for rotation in rotations:
         for scale in scales:
-            # size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
-            size_before_pad = int(size * max_scale / max_scale) // 2 * 2 + 1
-            # 15
-            print("size_before_pad")
-            print(size_before_pad)
+            # [Change 1]: make this back to the original version (same as other functions)
+            size_before_pad = int(size * scale / max_scale) // 2 * 2 + 1
             assert size_before_pad > 1
+            # [Change 2]: check fb.py for calculate_FB_bases_rot_scale
             basis = multiscale_fourier_bessel_rot_scale(size_before_pad,
                                                 base_rotation=rotation,
                                                 base_scale=scale,

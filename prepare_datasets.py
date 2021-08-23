@@ -123,7 +123,7 @@ def make_fmnist_rotation_scale_50k(source, dest, min_rot, max_rot, min_scale, ma
     '''
     Following a similar procedure to the previous function (make_mnist_rotation_scale_50k)
     '''
-    FMNIST_TRAIN_SIZE = 10000
+    FMNIST_TRAIN_SIZE = 5000
     FMNIST_VAL_SIZE = 2000
     FMNIST_TEST_SIZE = 50000
 

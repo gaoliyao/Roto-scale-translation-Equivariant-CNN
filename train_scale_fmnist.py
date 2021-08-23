@@ -45,7 +45,7 @@ parser.add_argument('--save_model_path', type=str, default='')
 parser.add_argument('--tag', type=str, default='', help='just a tag')
 parser.add_argument('--data_dir', type=str)
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 
 args = parser.parse_args()
 
