@@ -375,4 +375,4 @@ def calculate_FB_bases_rot_scale_gaussian(L1, theta, alpha, maxK):
     psi = psi/c
 
     return psi, c, kq_Psi
-# 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
+# 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

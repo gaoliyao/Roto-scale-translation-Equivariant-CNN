@@ -18,6 +18,7 @@ function train_scale_mnist() {
             --lr 0.01 \
             --lr_steps 20 40 \
             --model $1 \
+            --basis "G"\
             --save_model_path "./saved_models/mnist/$1_extra_scaling_$2.pt" \
             --cuda \
             --extra_scaling $2 \
@@ -36,17 +37,12 @@ function train_scale_mnist() {
 #)
 
 model_list=(
-    "mnist_ses_scalar_28_rot_1"              # scalar, no rotation
-    "mnist_ses_scalar_28_rot_4"              # scalar, 4 rotations    
-    "mnist_ses_scalar_28_rot_8"              # scalar, 8 rotations    
-    "mnist_ses_vector_28_rot_8_interrot_1"   # vector, 8 rotations
-    "mnist_ses_vector_28_rot_8_interrot_4"   # vector, 8 rotations   
-    "mnist_ses_vector_28_rot_8_interrot_8"   # vector, 8 rotations    
+    "mnist_ses_vector_28_rot_8_interrot_4"              # scalar, 8 rotations
 )
 
 for model_name in "${model_list[@]}"
 do
-    for extra_scaling in 0.5
+    for extra_scaling in 1.0
     do 
         train_scale_mnist "$model_name" "$extra_scaling" 
     done

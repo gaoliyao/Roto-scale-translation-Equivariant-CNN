@@ -548,14 +548,6 @@ def steerable_C(size, rotations, scales, effective_size, **kwargs):
     steerable_basis = torch.stack(basis_tensors, 1)
     print("steerable_C_basis.shape")
     print(steerable_basis.shape)
-    print("steerable_basis[0]")
-    print(steerable_basis[0][0])
-    print("steerable_basis[1]")
-    print(steerable_basis[0][1])
-    print("steerable_basis[2]")
-    print(steerable_basis[0][2])
-    print("steerable_basis[3]")
-    print(steerable_basis[0][3])
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
 

@@ -12,13 +12,13 @@ function train_scale_fmnist() {
     do 
         data_dir="$FMNIST_SCALE_DIR/FMNIST_scale/seed_$seed/scale_0.3_1.0"
         python train_scale_fmnist.py \
-            --batch_size 128 \
+            --batch_size 32 \
             --epochs 60 \
             --optim adam \
             --lr 0.01 \
-            --lr_steps 20 40 \
+            --lr_steps 30 \
             --model $1 \
-            --basis "E"\
+            --basis "A1"\
             --save_model_path "./saved_models/fmnist/$1_extra_scaling_$2.pt" \
             --cuda \
             --extra_scaling $2 \
@@ -37,9 +37,9 @@ function train_scale_fmnist() {
 #)
 
 model_list=(    
-    "mnist_ses_scalar_56_rot_8"              # scalar, 8 rotations                   
-    "mnist_ses_vector_56_rot_8_interrot_1"              # scalar, 8 rotations            
-    "mnist_ses_vector_56_rot_8_interrot_4"              # scalar, 8 rotations                          
+    "mnist_res_scalar_56_rot_1"              # scalar, 8 rotations                   
+    "mnist_res_scalar_56_rot_1"              # scalar, 8 rotations                   
+    "mnist_res_scalar_56_rot_1"              # scalar, 8 rotations                   s
 )
 
 for model_name in "${model_list[@]}"
