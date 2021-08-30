@@ -7,8 +7,8 @@ import numpy as np
 from scipy import special
 
 # Change based on environment
-#path_to_bessel = "/home/gao463/Downloads/sesn-master/models/impl/bessel.npy"
-path_to_bessel = "/home/zhu/Documents/research/rstecnn/sesn-new/models/impl/bessel.npy"
+path_to_bessel = "/home/gao463/Downloads/sesn-master/models/impl/bessel.npy"
+#path_to_bessel = "/home/zhu/Documents/research/rstecnn/sesn-new/models/impl/bessel.npy"
 
 def cartesian_to_polar_coordinates(x, y):
     rho = np.sqrt(x**2 + y**2)
@@ -456,7 +456,7 @@ def calculate_FB_bases_rot_scale_gaussian_old_wrong(L1, theta, alpha, maxK):
         
         Phi = 1./np.abs(special.jv(ki+1, R_ns[i]))*F*np.exp(-(rgrid**2)/(2*alpha**2))*(1.0/alpha)
 
-        Phi[rgrid >=1]=0p
+        Phi[rgrid >=1]=0
 
         Phi_ns[:, i] = Phi
 
