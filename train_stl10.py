@@ -58,6 +58,12 @@ print(flush=True)
 # Data
 #########################################
 train_loader = loaders.stl10_plus_train_loader(args.batch_size, args.data_dir)
+
+# set random seed for fix testing set
+torch.manual_seed(0)
+random.seed(0)
+np.random.seed(0)
+
 test_loader = loaders.stl10_test_loader(args.batch_size, args.data_dir)
 num_classes = 10
 
@@ -67,6 +73,11 @@ print()
 print('Test:')
 print(loaders.loader_repr(test_loader))
 print(flush=True)
+
+# reset random seed for training
+torch.manual_seed(time.time())
+random.seed(time.time())
+np.random.seed(int(time.time()))
 
 #########################################
 # Model
