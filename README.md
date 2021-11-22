@@ -22,4 +22,6 @@ sh prepare_mnist_rot_scale.sh
 # Fashion-MNIST
 sh prepare_fmnist_rot_scale.sh
 ```
-Please specify the rotation range and scaling range for data generation. We initially generate [0. 360] rotation and [0.3, 1.0] scaling. 
+Please specify the rotation range and scaling range for data generation. We initially generate [0. 360] rotation and [0.3, 1.0] scaling. If resample/regeneration of training/testing dataset is required, please set i from 0 to the expected number of experiments you wish. 
+
+
