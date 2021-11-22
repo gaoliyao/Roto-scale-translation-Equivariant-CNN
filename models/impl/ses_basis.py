@@ -12,7 +12,6 @@ def hermite_poly(X, n):
     Args:
         n: int >= 0
         X: np.array
-
     Output:
         Y: array of shape X.shape
     """
@@ -25,7 +24,6 @@ def hermite_poly_rot_scale(x, y, rot, scale, n, m):
     Args:
         n: int >= 0
         X: np.array
-
     Output:
         Y: array of shape X.shape
     """
@@ -744,7 +742,7 @@ def steerable_H(size, rotations, scales, effective_size, **kwargs):
 def steerable_D1(size, rotations, scales, effective_size, **kwargs):
     mult = kwargs.get('mult', 1.2)
     max_order = kwargs.get('max_order', 4)
-    num_funcs = int(effective_size**2 / 2)
+    num_funcs = effective_size**2
     max_scale = max(scales)
     basis_tensors = []
     print(scales)
@@ -804,7 +802,6 @@ def steerable_rot_scale(x, y, rot, scale, j, k):
     Args:
         n: int >= 0
         X: np.array
-
     Output:
         Y: array of shape X.shape
     """
@@ -825,25 +822,24 @@ def onescale_steerable_rot_scale(size, base_rotation, base_scale, max_order=4, m
     by decreasing the scale.
     '''
     num_funcs = num_funcs or size ** 2
+    num_funcs_per_scale = ((max_order + 1) * (max_order + 2)) // 2
+    # print('hermite scales', scales)
 
     basis_xy = []
 
     X, Y = np.meshgrid(range(-(size // 2), (size // 2)+1), range(-(size // 2), (size // 2)+1))
     ugrid = np.concatenate([Y.reshape(-1,1), X.reshape(-1,1)], 1)
 
-    # order_y, order_x = np.indices([max_order + 1, max_order + 1])
-    order_y, order_x = np.indices([max_order + 2, max_order - 2])
-    print(order_y.shape)
-    print(order_x.shape)
+    order_y, order_x = np.indices([max_order + 1, max_order + 1])
 
     # bx: (15, 5)
     # by: (15, 5)
     bxy = []
     
-    for i in range(order_y.shape[0]):
-        for j in range(order_y.shape[1]):
-            n = order_x[i][j] # j
-            m = order_y[i][j] # k
+    for i in range(len(order_x)):
+        for j in range(len(order_y)):
+            n = order_x[i][j]
+            m = order_y[i][j]
             base_n_m = steerable_rot_scale(ugrid[:,0], ugrid[:,1], base_rotation, base_scale, n, m)
             # print(base_n_m.shape)                
             bxy.append(base_n_m)
@@ -871,7 +867,7 @@ def onescale_steerable_rot_scale(size, base_rotation, base_scale, max_order=4, m
 def steerable_I1(size, rotations, scales, effective_size, **kwargs):
     mult = kwargs.get('mult', 1.2)
     max_order = effective_size - 1
-    num_funcs = int(effective_size**2)
+    num_funcs = effective_size**2
     max_scale = max(scales)
     basis_tensors = []
     for rotation in rotations:
@@ -895,7 +891,6 @@ def steerable_I1(size, rotations, scales, effective_size, **kwargs):
     print(steerable_basis.shape)
     # steerable_basis: (49, 16, 15, 15)
     return steerable_basis
-
 
 
 def normalize_basis_by_min_scale(basis):
