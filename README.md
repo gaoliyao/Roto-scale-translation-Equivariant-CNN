@@ -11,7 +11,8 @@ Experiment code for "Deformation Robust Roto-Scale-Translation Equivariant CNNs"
 5. matplotlib 3.3.2
 
 ### Steps of running experiments
-1. Setup. Install related packages. 
-2. Data generation. Generate rotated/scaled datasets to folder. 
-3. Training. Specify hyperparameters and train with specified model. 
-4. Check testing results. 
+1. Data generation. Generate rotated/scaled datasets to folder. 
+2. Training. Specify hyperparameters and train with specified model. 
+3. Check testing results. 
+
+#### 1. Data generation
