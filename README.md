@@ -16,3 +16,10 @@ Experiment code for "Deformation Robust Roto-Scale-Translation Equivariant CNNs"
 3. Check testing results. 
 
 #### 1. Data generation
+```
+# MNIST
+sh prepare_mnist_rot_scale.sh
+# Fashion-MNIST
+sh prepare_fmnist_rot_scale.sh
+```
+Please specify the rotation range and scaling range for data generation. We initially generate [0. 360] rotation and [0.3, 1.0] scaling. 
