@@ -27,4 +27,11 @@ Please specify the rotation range and scaling range for data generation. We init
 ### 2. Training. Specify hyperparameters and train with specified model. 
 We include the following models with the following names explained in this [link](https://github.com/gaoliyao/sesn/wiki/Model-and-their-names). 
 
+To test for one or two models, just directly call the shell script. 
+```
+# For MNIST
+sh experiments_mnist_small.sh
+# For FMNIST
+sh experiments_fmnist_small.sh
+```
 
