@@ -24,4 +24,7 @@ sh prepare_fmnist_rot_scale.sh
 ```
 Please specify the rotation range and scaling range for data generation. We initially generate [0. 360] rotation and [0.3, 1.0] scaling. If resample/regeneration of training/testing dataset is required, please set i from 0 to the expected number of experiments you wish. 
 
+### 2. Training. Specify hyperparameters and train with specified model. 
+We include the following models with the following names explained in this [link](https://github.com/gaoliyao/sesn/wiki/Model-and-their-names). 
+
 
