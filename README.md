@@ -47,13 +47,19 @@ Due to double-blind policy, we cannot directly attach the links to specific mode
 
 ### 1. CNN (Baseline)
 
+##### Implementation location 
 In file models/mnist_cnn.py Line 7 - 41. We applied function in models/mnist_cnn.py Line 48 - 49 to setup this CNN model. We note here our models are built upon this Convolutional Neural Network. There is no basis choice for CNN. 
 
+##### To run this model
 In the shell script, please add **mnist_cnn_56** in model list to run. 
 
 ### 2. RDCF (Rotation-Equivariance Baseline)
 
-In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_res_scalar_56_rot_8** in model list to run. Further, please set the basis to be "D1". 
+##### Implementation location 
+In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. 
+
+##### To run this model
+In the shell script, please add **mnist_res_scalar_56_rot_8** in model list to run. Further, please set the basis to be "D1". 
 
 - **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
 - **scalar** means that there is no inter-rotation. 
@@ -61,13 +67,19 @@ In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_re
 
 ### 3. SEVF (Scale-Equivariance Baseline)
 
+##### Implementation location 
 In file models/mnist_sevf.py Line 50 - 88. We applied function in models/mnist_sevf.py Line 95 - 96 to setup this SEVF model. There is no choice of basis for this model. 
 
+##### To run this model
 In the shell script, please add **mnist_sevf_scalar_56** in model list to run. **scalar** means that there is no inter-scale operations. 
 
 ### 4. SESN (Scale-Equivariance Baseline)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be "C". 
+##### Implementation location 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. 
+
+##### To run this model
+In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be "C". 
 
 - **rot_1** indicates that there are no additional rotation channels. 
 - **scalar** means that there is no inter-rotation. 
@@ -76,7 +88,11 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 ### 5. SDCF (Scale-Equivariance Baseline)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SDCF model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be **"G"**. 
+##### Implementation location 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SDCF model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. 
+
+##### To run this model
+In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be **"G"**. 
 
 - **rot_1** indicates that there are no additional rotation channels. 
 - **scalar** means that there is no inter-rotation. 
@@ -85,7 +101,11 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 ### 6. RST-CNN FB/SL (Ours)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_8** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
+##### Implementation location 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. 
+
+##### To run this model
+In the shell script, please add **mnist_ses_scalar_56_rot_8** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
 
 - **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
 - If we specify **mnist_ses_scalar_56_rot_4**, there will have 4 rotation channels uniformly distanced in range $(-pi, pi)$.
@@ -95,7 +115,11 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 ### 7. RST-CNN Inter-rotation FB/SL (Ours)
 
-In file models/mnist_ses.py Line 57 - 100. We applied function in models/mnist_ses.py Line 331 - 347 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_vector_56_rot_8_interrot_4** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
+##### Implementation location 
+In file models/mnist_ses.py Line 57 - 100. We applied function in models/mnist_ses.py Line 331 - 347 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. 
+
+##### To run this model
+In the shell script, please add **mnist_ses_vector_56_rot_8_interrot_4** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
 
 - **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
 - **vector** means that there will be inter-rotations. 
