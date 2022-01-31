@@ -51,7 +51,7 @@ In file models/mnist_cnn.py Line 7 - 41. We applied function in models/mnist_cnn
 
 2. RDCF (Rotation-Equivariance Baseline)
 
-In file models/mnist_cnn.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. 
+In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. 
 
 3. SEVF (Scale-Equivariance Baseline)
 
