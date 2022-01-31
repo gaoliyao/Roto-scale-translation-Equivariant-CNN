@@ -55,7 +55,11 @@ In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_re
 
 3. SEVF (Scale-Equivariance Baseline)
 
+In file models/mnist_sevf.py Line 50 - 88. We applied function in models/mnist_sevf.py Line 95 - 96 to setup this SEVF model. There is no choice of basis for this model. 
+
 4. SESN (Scale-Equivariance Baseline)
+
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this SEVF model. There is no choice of basis for this model. 
 
 5. SDCF (Scale-Equivariance Baseline)
 
