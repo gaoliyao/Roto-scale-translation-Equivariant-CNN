@@ -53,9 +53,9 @@ In the shell script ("experiments_mnist_small.sh"), please add **mnist_cnn_56** 
 
 ### 2. RDCF (Rotation-Equivariance Baseline)
 
-In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. 
+In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. In the shell script ("experiments_mnist_small.sh"), please add **mnist_res_scalar_56_rot_8** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be "D1". 
 
-In the shell script ("experiments_mnist_small.sh"), please add **mnist_res_scalar_56_rot_8** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be "D1". **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **scalar** means that there is no inter-rotation. **res** stands for "rotation-equivariant specified". 
+**"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **scalar** means that there is no inter-rotation. **res** stands for "rotation-equivariant specified". 
 
 ### 3. SEVF (Scale-Equivariance Baseline)
 
@@ -65,29 +65,27 @@ In the shell script ("experiments_mnist_small.sh"), please add **mnist_sevf_scal
 
 ### 4. SESN (Scale-Equivariance Baseline)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be "C". 
 
-In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be "C". **"rot_1"** indicates that there are no additional rotation channels. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
+**"rot_1"** indicates that there are no additional rotation channels. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
 
 ### 5. SDCF (Scale-Equivariance Baseline)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SDCF model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SDCF model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"G"**. 
 
-In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"G"**. **"rot_1"** indicates that there are no additional rotation channels. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
+**"rot_1"** indicates that there are no additional rotation channels. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
 
 ### 6. RST-CNN FB/SL (Ours)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_8** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"E"** or **"G"**. 
 
-In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_scalar_56_rot_8** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"E"** or **"G"**. **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
-
-**mnist_ses_scalar_56_rot_4** will have 4 rotation channels uniformly distanced in range $(-pi, pi)$.
+**"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **scalar** means that there is no inter-rotation. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. **mnist_ses_scalar_56_rot_4** will have 4 rotation channels uniformly distanced in range $(-pi, pi)$.
 
 ### 7. RST-CNN Inter-rotation FB/SL (Ours)
 
-In file models/mnist_ses.py Line 57 - 100. We applied function in models/mnist_ses.py Line 331 - 347 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. 
+In file models/mnist_ses.py Line 57 - 100. We applied function in models/mnist_ses.py Line 331 - 347 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_vector_56_rot_8_interrot_4** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"E"** or **"G"**. 
 
-In the shell script ("experiments_mnist_small.sh"), please add **mnist_ses_vector_56_rot_8_interrot_4** in model list to run. Further, please set the basis (line 21) in "experiments_mnist_small.sh" to be **"E"** or **"G"**. **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **vector** means that there will be inter-rotations. **interrot_4** means that four rotation channels will be inter-rotated. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
+**"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. **vector** means that there will be inter-rotations. **interrot_4** means that four rotation channels will be inter-rotated. **ses** stands for "scale-equivariant specified". The number of scale channels is setup to be 4. 
 
 **mnist_ses_vector_56_rot_8_interrot_8** will have all rotation channels being inter-rotated. 
 
