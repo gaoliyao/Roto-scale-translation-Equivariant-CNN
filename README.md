@@ -59,18 +59,27 @@ In file models/mnist_sevf.py Line 50 - 88. We applied function in models/mnist_s
 
 4. SESN (Scale-Equivariance Baseline)
 
-In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this SEVF model. There is no choice of basis for this model. 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. 
 
 5. SDCF (Scale-Equivariance Baseline)
 
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this SESN model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. 
+
 6. RST-CNN FB/SL (Ours)
+
+In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this SESN model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. 
 
 7. RST-CNN Inter-rotation FB/SL (Ours)
 
 ### Basis implementations
 Basis A1: Hermite Gaussian one scale
+
 Basis C: Hermite Gaussian rotation and multi-scale
+
 Basis D1: Fourier Bessel one scale
+
 Basis E: Fourier Bessel rotation and multi-scale
+
 Basis G1: SL rotation and one-scale
+
 Basis G: SL rotation and multi-scale
