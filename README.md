@@ -43,11 +43,30 @@ The results are collected in file results.yml after running. An example running 
 ```
 
 ## Models in paper
-- CNN
-- SFCNN
-- RDCF
-- SEVF
-- SESN
-- SDCF
-- RST-CNN (FB)
-- RST-CNN (SL)
+Due to double-blind policy, we cannot directly attach the links to specific models here. We mark the file names with line numbers instead in the following. We included some of the models within this repo. 
+
+1. CNN (Baseline)
+
+In file models/mnist_cnn.py Line 7 - 41. We applied function in models/mnist_cnn.py Line 48 - 49 to setup this CNN model. We note here our models are built upon this Convolutional Neural Network. There is no basis choice for CNN. 
+
+2. RDCF (Rotation-Equivariance Baseline)
+
+In file models/mnist_cnn.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. 
+
+3. SEVF (Scale-Equivariance Baseline)
+
+4. SESN (Scale-Equivariance Baseline)
+
+5. SDCF (Scale-Equivariance Baseline)
+
+6. RST-CNN FB/SL (Ours)
+
+7. RST-CNN Inter-rotation FB/SL (Ours)
+
+### Basis implementations
+Basis A1: Hermite Gaussian one scale
+Basis C: Hermite Gaussian rotation and multi-scale
+Basis D1: Fourier Bessel one scale
+Basis E: Fourier Bessel rotation and multi-scale
+Basis G1: SL rotation and one-scale
+Basis G: SL rotation and multi-scale
