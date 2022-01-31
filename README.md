@@ -55,8 +55,9 @@ In the shell script, please add **mnist_cnn_56** in model list to run.
 
 In file models/mnist_res.py Line 11 - 54. We applied function in models/mnist_res.py Line 235 - 249 to setup this RDCF model. We use Fourier-Bessel with one scale basis (marked by D1 in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_res_scalar_56_rot_8** in model list to run. Further, please set the basis to be "D1". 
 
-- **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
-- **scalar** means that there is no inter-rotation. **res** stands for "rotation-equivariant specified". 
+- **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
+- **scalar** means that there is no inter-rotation. 
+- **res** stands for "rotation-equivariant specified". 
 
 ### 3. SEVF (Scale-Equivariance Baseline)
 
@@ -68,7 +69,7 @@ In the shell script, please add **mnist_sevf_scalar_56** in model list to run. *
 
 In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SESN model. We use Hermite Gaussian with multi-scale basis (marked by C in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be "C". 
 
-- **"rot_1"** indicates that there are no additional rotation channels. 
+- **rot_1** indicates that there are no additional rotation channels. 
 - **scalar** means that there is no inter-rotation. 
 - **ses** stands for "scale-equivariant specified". 
 - The number of scale channels is setup to be 4. 
@@ -77,7 +78,7 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 226 - 241 to setup this SDCF model. We use SL basis (marked by G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_1** in model list to run. Further, please set the basis to be **"G"**. 
 
-- **"rot_1"** indicates that there are no additional rotation channels. 
+- **rot_1** indicates that there are no additional rotation channels. 
 - **scalar** means that there is no inter-rotation. 
 - **ses** stands for "scale-equivariant specified". 
 - The number of scale channels is setup to be 4. 
@@ -86,7 +87,7 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_ses.py Line 296 - 311 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_scalar_56_rot_8** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
 
-- **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
+- **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
 - If we specify **mnist_ses_scalar_56_rot_4**, there will have 4 rotation channels uniformly distanced in range $(-pi, pi)$.
 - **scalar** means that there is no inter-rotation. 
 - **ses** stands for "scale-equivariant specified". 
@@ -96,7 +97,7 @@ In file models/mnist_ses.py Line 11 - 54. We applied function in models/mnist_se
 
 In file models/mnist_ses.py Line 57 - 100. We applied function in models/mnist_ses.py Line 331 - 347 to setup this RST-CNN model. We use FB/SL basis (marked by E/G in models/impl/ses_basis.py) in this case. In the shell script, please add **mnist_ses_vector_56_rot_8_interrot_4** in model list to run. Further, please set the basis to be **"E"** or **"G"**. 
 
-- **"rot_8"** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
+- **rot_8** indicates that there are 8 rotation channels uniformly distanced in range $(-pi, pi)$. 
 - **vector** means that there will be inter-rotations. 
 - **interrot_4** means that four rotation channels will be inter-rotated. 
 - **ses** stands for "scale-equivariant specified". 
