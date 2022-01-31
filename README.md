@@ -41,3 +41,13 @@ The results are collected in file results.yml after running. An example running 
 ```
 - {model: 'mnist_cnn_56', acc: 0.89276, basis: 'D1', batch_size: 128, cuda: true, data_dir: './datasets/MNIST_scale/seed_0/scale_0.3_1.0', dataset: 'scale_mnist', decay: 0.0001, elapsed_time: 110, epochs: 45, extra_scaling: 0.5, lr: 0.01, lr_gamma: 0.1, lr_steps: [30], momentum: 0.9, nesterov: false, num_parameters: 494549, optim: 'adam', save_model_path: './saved_models/mnist/mnist_cnn_56_extra_scaling_0.5.pt', tag: 'sesn_experiments', time_per_epoch: 2}
 ```
+
+## Models in paper
+- CNN
+- SFCNN
+- RDCF
+- SEVF
+- SESN
+- SDCF
+- RST-CNN (FB)
+- RST-CNN (SL)
