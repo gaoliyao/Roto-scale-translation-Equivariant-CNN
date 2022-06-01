@@ -10,7 +10,6 @@ function train_scale_mnist() {
     # for seed in {0..5}
     for seed in {0..0}
     do 
-        data_dir="$MNIST_SCALE_DIR/MNIST_scale/seed_$seed/scale_0.3_1.0"
         python train_scale_mnist.py \
             --batch_size 128 \
             --epochs 60 \
@@ -23,7 +22,6 @@ function train_scale_mnist() {
             --cuda \
             --extra_scaling $2 \
             --tag "sesn_experiments" \
-            --data_dir="$data_dir" \
 
     done               
 }
@@ -35,11 +33,9 @@ function train_scale_mnist() {
 #    "mnist_ses_scalar_28p"  # MNIST (28x28) +
 #    "mnist_ses_vector_28p"  # MNIST (28x28) +
 #)
-
 model_list=(
-    "mnist_ses_vector_28_rot_8_interrot_4"              # scalar, 8 rotations
+    "mnist_ses_vector_96_rot_8_interrot_4"
 )
-
 for model_name in "${model_list[@]}"
 do
     for extra_scaling in 1.0

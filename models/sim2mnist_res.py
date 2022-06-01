@@ -12,9 +12,7 @@ class MNIST_SES_Scalar(nn.Module):
 
     def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], rotations=[0.0], basis_type='A', **kwargs):
         super().__init__()
-        # C1, C2, C3 = 32, 63, 95
-        # C1, C2, C3 = 32, 63, 95
-        C1, C2, C3 = 24, 47, 71
+        C1, C2, C3 = 32, 63, 95
         self.main = nn.Sequential(
             SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
@@ -61,8 +59,6 @@ class MNIST_SES_V(nn.Module):
     def __init__(self, pool_size=4, kernel_size=11, scales=[1.0], rotations=[0.0], scale_size=1, rotation_size=1, basis_type='A', dropout=0.7, **kwargs):
         super().__init__()
         C1, C2, C3 = 32, 63, 95
-        # C1, C2, C3 = 16, 31, 47
-        # C1, C2, C3 = 24, 47, 71
         self.main = nn.Sequential(
             SESConv_Z2_H(1, C1, kernel_size, 7, scales=scales, rotations=rotations,
                          padding=kernel_size // 2, bias=True,
@@ -103,127 +99,102 @@ class MNIST_SES_V(nn.Module):
         x = self.linear(x)
         return x
 
-def mnist_ses_scalar_96_rot_1(**kwargs):
+def mnist_res_scalar_96_rot_1(**kwargs):
     num_scales = 4
-    factor = 2.0
-    min_scale = 1.2
-    mult = 1.2
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
     size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [0.0]
     spt = 3.5
-    basis = kwargs.get('basis', "E")
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_Scalar(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                              basis_type=basis, mult=mult, max_order=4, dropout=dropout, spt=spt)
     return model
 
-def mnist_ses_scalar_96_rot_4(**kwargs):
+def mnist_res_scalar_96_rot_4(**kwargs):
     num_scales = 4
     factor = 3.0
     min_scale = 1.7
     mult = 1.5
-    size = 25
+    size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [x * 2*np.pi/4 for x in range(4)]
-    spt = 3.5   
-    basis = kwargs.get('basis', "E")
+    spt = 3.5    
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_Scalar(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                              basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
-def mnist_ses_vector_96_rot_4_interrot_2(**kwargs):
+    
+def mnist_res_scalar_96_rot_8(**kwargs):
     num_scales = 4
     factor = 3.0
     min_scale = 1.7
     mult = 1.5
-    size = 25
+    size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
-    rotations = [x * 2*np.pi/4 for x in range(4)]
-    spt = 3.5
-    basis = kwargs.get('basis', "E")
-    model = MNIST_SES_V(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
-                        scale_size=1, rotation_size=2,
-                        basis_type=basis, mult=mult, max_order=4, dropout=dropout)
-    return model
-
-
-def mnist_ses_scalar_96_rot_8(**kwargs):
-    num_scales = 4
-    factor = 2.0
-    min_scale = 1.2
-    mult = 1.2
-    size = 35
-    dropout = 0.7
-    q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
-    basis = kwargs.get('basis', "E")
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_Scalar(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                              basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
-def mnist_ses_vector_96_rot_8_interrot_1(**kwargs):
+def mnist_res_vector_96_rot_8_interrot_1(**kwargs):
     num_scales = 4
     factor = 3.0
     min_scale = 1.7
     mult = 1.5
-    size = 25
+    size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
-    basis = kwargs.get('basis', "E")
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_V(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=1,
                         basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
-def mnist_ses_vector_96_rot_8_interrot_4(**kwargs):
+def mnist_res_vector_96_rot_8_interrot_4(**kwargs):
     num_scales = 4
-    factor = 2.0
-    min_scale = 1.2
-    mult = 1.2
-    size = 25
+    factor = 3.0
+    min_scale = 1.7
+    mult = 1.5
+    size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
-    basis = kwargs.get('basis', "E")
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_V(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=4,
                         basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
 
-def mnist_ses_vector_96_rot_8_interrot_8(**kwargs):
+def mnist_res_vector_96_rot_8_interrot_8(**kwargs):
     num_scales = 4
     factor = 3.0
     min_scale = 1.7
     mult = 1.5
-    size = 25
+    size = 15
     dropout = 0.7
     q = factor ** (1 / (num_scales - 1))
-    scales = [min_scale * q**i for i in range(num_scales)]
-    scales = [round(s, 2) for s in scales]
+    scales = [1.0]
     rotations = [x * 2*np.pi/8 for x in range(8)]
     spt = 3.5
-    basis = kwargs.get('basis', "E")
+    basis = kwargs.get('basis', "D1")
     model = MNIST_SES_V(pool_size=12, kernel_size=size, scales=scales, rotations=rotations,
                         scale_size=1, rotation_size=8,
                         basis_type=basis, mult=mult, max_order=4, dropout=dropout)
     return model
-#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
