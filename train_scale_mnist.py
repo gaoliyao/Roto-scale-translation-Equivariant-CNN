@@ -24,13 +24,13 @@ model_names = sorted(name for name in models.__dict__
 
 
 parser = ArgumentParser()
-parser.add_argument('--batch_size', type=int, default=128)
+parser.add_argument('--batch_size', type=int, default=64)
 parser.add_argument('--epochs', type=int, default=60)
 
 parser.add_argument('--optim', type=str, default='adam', choices=['adam', 'sgd'])
 parser.add_argument('--momentum', type=float, default=0.9)
 parser.add_argument('--nesterov', action='store_true', default=False)
-parser.add_argument('--decay', type=float, default=1e-4)
+parser.add_argument('--decay', type=float, default=5e-2)
 parser.add_argument('--lr', type=float, default=0.005)
 parser.add_argument('--lr_steps', type=int, nargs='+', default=[20, 40])
 parser.add_argument('--lr_gamma', type=float, default=0.1)
@@ -60,17 +60,25 @@ assert len(args.save_model_path)
 #########################################
 # Data
 #########################################
-train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir)
-val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir, args.extra_scaling)
-test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir, args.extra_scaling)
+train_loader = loaders.sim2mnist_train_loader(args.batch_size, args.extra_scaling)
+val_loader = loaders.sim2mnist_val_loader(args.batch_size)
+test_loader = loaders.sim2mnist_test_loader(args.batch_size)
+
+# train_loader = loaders.mnistrts_train_loader(args.batch_size)
+# val_loader = loaders.mnistrts_val_loader(args.batch_size)
+# test_loader = loaders.mnistrts_test_loader(args.batch_size)
+
+# train_loader = loaders.scale_mnist_train_loader(args.batch_size, args.data_dir, args.extra_scaling)
+# val_loader = loaders.scale_mnist_val_loader(args.batch_size, args.data_dir)
+# test_loader = loaders.scale_mnist_test_loader(args.batch_size, args.data_dir)
 
 
-print('Train:')
-print(loaders.loader_repr(train_loader))
-print('\nVal:')
-print(loaders.loader_repr(val_loader))
-print('\nTest:')
-print(loaders.loader_repr(test_loader))
+# print('Train:')
+# print(loaders.loader_repr(train_loader))
+# print('\nVal:')
+# print(loaders.loader_repr(val_loader))
+# print('\nTest:')
+# print(loaders.loader_repr(test_loader))
 
 #########################################
 # Model
