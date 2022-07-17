@@ -1,6 +1,16 @@
 # Deformation Robust Roto-Scale-Translation Equivariant CNNs
 
-Experiment code for "Deformation Robust Roto-Scale-Translation Equivariant CNNs". This is a Convolutional Neural Network (CNN) model that is robust to rotation, scaling, and translation transformation under local deformation. 
+This repository is the official implementation of "Deformation Robust Roto-Scale-Translation Equivariant CNNs" by Mars Gao, Guang Lin, and Wei Zhu.
+This is a Convolutional Neural Network (CNN) model that is robust to rotation, scaling, and translation transformation under local deformation. 
+
+```
+@article{gao2021deformation,
+  title={Deformation robust roto-scale-translation equivariant cnns},
+  author={Gao, Mars L and Lin, Guang and Zhu, Wei},
+  journal={arXiv preprint arXiv:2111.10978},
+  year={2022}
+}
+```
 
 ## Reproduce experiments on Rot-scale MNIST and Rot-scale Fasion-MNIST
 ### Environment
